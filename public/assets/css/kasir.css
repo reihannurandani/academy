@@ -1,0 +1,129 @@
+body{
+    margin:0;
+    font-family:'Poppins',sans-serif;
+    display:flex;
+    background:#3b6fbf;
+}
+
+/* ================= SIDEBAR ================= */
+.sidebar{
+    width:250px;
+    min-height:100vh;
+    background:#2f5fb3;
+    color:white;
+    padding:25px;
+    position:fixed;
+    display:flex;
+    flex-direction:column;
+}
+
+.sidebar h4{
+    text-align:center;
+    margin-bottom:20px;
+    font-weight:600;
+}
+
+.sidebar hr{
+    border:1px solid rgba(255,255,255,0.2);
+}
+
+.sidebar a{
+    display:block;
+    color:white;
+    text-decoration:none;
+    padding:12px 15px;
+    border-radius:12px;
+    margin-bottom:8px;
+    transition:0.3s;
+    font-weight:500;
+}
+
+.sidebar a:hover{
+    background:#3b6fbf;
+    transform:translateX(5px);
+}
+
+.sidebar .logout{
+    margin-top:auto;
+    background:#e02424;
+    text-align:center;
+}
+
+.sidebar .logout:hover{
+    background:#c81e1e;
+}
+
+/* ================= MAIN ================= */
+.main{
+    margin-left:270px;
+    padding:30px;
+    width:100%;
+}
+
+/* ================= HEADER ================= */
+.header{
+    background:#b7c7e6;
+    padding:15px 25px;
+    border-radius:20px;
+    margin-bottom:25px;
+}
+
+/* ================= DASHBOARD CONTAINER ================= */
+.dashboard-container{
+    background:#9fb7d9;
+    padding:25px;
+    border-radius:25px;
+    display:flex;
+    gap:25px;
+    flex-wrap:wrap;
+}
+
+/* ================= BOX ================= */
+.dashboard-box{
+    flex:1;
+    background:#5f87c2;
+    padding:20px;
+    border-radius:20px;
+    color:white;
+    min-width:300px;
+    transition:.3s;
+}
+
+.dashboard-box:hover{
+    transform:translateY(-5px);
+}
+
+.dashboard-box h3{
+    margin-bottom:15px;
+    font-size:18px;
+}
+
+/* ================= TABLE ================= */
+.table-wrapper{
+    background:#4e78b5;
+    border-radius:15px;
+    overflow:hidden;
+}
+
+table{
+    width:100%;
+    border-collapse:collapse;
+    color:white;
+}
+
+thead{
+    background:#7fa1d4;
+}
+
+th, td{
+    padding:12px;
+    text-align:left;
+}
+
+tbody tr{
+    border-bottom:1px solid rgba(255,255,255,0.2);
+}
+
+tbody tr:hover{
+    background:rgba(255,255,255,0.1);
+}
