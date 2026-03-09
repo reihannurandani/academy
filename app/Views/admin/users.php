@@ -1,79 +1,92 @@
 <?= view('layout/header') ?>
 <?= view('layout/sidebar') ?>
+<link rel="stylesheet" href="<?= base_url('assets/css/admin-menu.css') ?>">
 
 <div class="main">
 
-    <!-- HEADER WITH LOGO -->
-    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
+    <div class="page-header">
         <h2>Kelola User</h2>
-
-        <lottie-player
-            src="https://assets2.lottiefiles.com/packages/lf20_zrqthn6o.json"
-            background="transparent"
-            speed="1"
-            style="width:120px;height:120px;"
-            loop
-            autoplay>
-        </lottie-player>
     </div>
 
-    <!-- BUTTON TAMBAH -->
-    <div style="margin-bottom:20px;">
-        <a href="<?= base_url('admin/create-user') ?>" 
-           style="background:#2563eb; color:white; padding:10px 20px; border-radius:20px; text-decoration:none;">
-           + Tambah User
-        </a>
-    </div>
+    <div class="menu-container">
 
-    <!-- TABEL -->
-    <div style="background:#cbd5e1; padding:30px; border-radius:25px;">
-        <table class="table table-bordered">
-            <thead style="background:#1e3a8a; color:white;">
+        <div class="action-bar">
+            <a href="<?= base_url('admin/create-user') ?>" class="btn-add">
+                Tambah +
+            </a>
+
+            <div class="search-box">
+                <input type="text" placeholder="Cari...">
+            </div>
+        </div>
+
+        <table class="table-custom">
+            <thead>
                 <tr>
+                    <th>No</th>
+                    <th>Nama User</th>
                     <th>Nama</th>
-                    <th>Username</th>
                     <th>Role</th>
                     <th>Status</th>
-                    <th width="150">Aksi</th>
+                    <th>Aksi</th>
                 </tr>
             </thead>
-
             <tbody>
-            <?php if(!empty($users)): ?>
-                <?php foreach($users as $u): ?>
+            <?php $no=1; foreach($users as $u): ?>
                 <tr>
-                    <td><?= esc($u['nama']) ?></td>
+                    <td><?= $no++ ?></td>
                     <td><?= esc($u['username']) ?></td>
+                    <td><?= esc($u['nama']) ?></td>
                     <td><?= esc($u['role']) ?></td>
                     <td>
-                        <?php if($u['status'] == 'aktif'): ?>
-                            <span style="background:#16a34a; color:white; padding:5px 10px; border-radius:15px;">
-                                Aktif
-                            </span>
+                        <?php if($u['status']=='aktif'): ?>
+                            <span class="badge-success">aktif</span>
                         <?php else: ?>
-                            <span style="background:#dc2626; color:white; padding:5px 10px; border-radius:15px;">
-                                Nonaktif
-                            </span>
+                            <span class="badge-danger">nonaktif</span>
                         <?php endif; ?>
                     </td>
                     <td>
-                        <a href="<?= base_url('admin/edit-user/'.$u['id']) ?>">Edit</a> |
-                        <a href="<?= base_url('admin/delete-user/'.$u['id']) ?>"
-                           onclick="return confirm('Yakin ingin hapus?')">
-                           Delete
-                        </a>
+                        <a href="<?= base_url('admin/edit-user/'.$u['id']) ?>" class="btn-edit">edit</a>
+
+                        <!-- Tombol Hapus -->
+                        <button class="btn-delete"
+                                onclick="openModal(<?= $u['id']; ?>)">
+                            🗑
+                        </button>
                     </td>
                 </tr>
-                <?php endforeach; ?>
-            <?php else: ?>
-                <tr>
-                    <td colspan="5" align="center">Belum ada data</td>
-                </tr>
-            <?php endif; ?>
+            <?php endforeach; ?>
             </tbody>
         </table>
+
     </div>
 
 </div>
+
+<!-- ========================= -->
+<!-- MODAL KONFIRMASI -->
+<!-- ========================= -->
+<div id="confirmModal" class="modal-overlay">
+    <div class="modal-box">
+        <h3>Yakin?</h3>
+
+        <div class="modal-action">
+            <a id="confirmDelete" href="#" class="btn-yes">Ya</a>
+            <button onclick="closeModal()" class="btn-cancel">Cancel</button>
+        </div>
+    </div>
+</div>
+
+<script>
+function openModal(id) {
+    document.getElementById("confirmModal").style.display = "flex";
+    document.getElementById("confirmDelete").href =
+        "<?= base_url('admin/delete-user/') ?>" + id;
+}
+
+function closeModal() {
+    document.getElementById("confirmModal").style.display = "none";
+}
+</script>
 
 <?= view('layout/footer') ?>

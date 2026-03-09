@@ -1,3 +1,7 @@
+<?= view('layout/header') ?>
+<?= view('layout/sidebar') ?>
+<link rel="stylesheet" href="<?= base_url('assets/css/admin-form.css') ?>">
+
 <h3>Edit Produk</h3>
 
 <form method="post" action="<?= base_url('admin/update-product/'.$product['id']) ?>">

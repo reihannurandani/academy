@@ -65,21 +65,15 @@ $routes->group('admin', ['filter' => ['auth', 'role:admin']], function($routes){
 */
 $routes->group('kasir', ['filter'=>['auth','role:kasir']], function($routes){
 
-    // Dashboard
     $routes->get('dashboard','Kasir::index');
 
-    /*
-    ================= TRANSAKSI =================
-    */
     $routes->get('transaksi','Kasir::transaksi');
-    $routes->post('save-transaksi','Kasir::saveTransaksi');
 
-    /*
-    ================= STRUK =================
-    */
+    // SAMA PERSIS DENGAN FORM
+    $routes->post('saveTransaksi','Kasir::saveTransaksi');
+
     $routes->get('struk/(:num)','Kasir::struk/$1');
 });
-
 
 /*
 |--------------------------------------------------------------------------
@@ -95,9 +89,15 @@ $routes->group('owner', ['filter' => ['auth', 'role:owner']], function($routes){
     ================= LAPORAN =================
     */
     $routes->get('laporan', 'Owner::laporan');
+    $routes->get('cetak-pdf', 'Owner::cetakPdf'); 
 
     /*
     ================= LOG ACTIVITY =================
     */
     $routes->get('logs', 'Owner::logActivity');
+
+    /*
+    ================= UPDATE STATUS =================
+    */
+    $routes->post('update-status/(:num)', 'Owner::updateStatus/$1');
 });

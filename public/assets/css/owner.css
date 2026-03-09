@@ -6,124 +6,142 @@ font-family:'Poppins',sans-serif;
 }
 
 body{
-background:#2f6fcc;
-display:flex;
-overflow-x:hidden;
+background:linear-gradient(135deg,#2f6fcc,#4e73df);
 }
 
-/* ===== ANIMATION ===== */
-@keyframes fadeIn{
-from{opacity:0; transform:translateY(20px);}
-to{opacity:1; transform:translateY(0);}
-}
-
-@keyframes slideSidebar{
-from{transform:translateX(-100%);}
-to{transform:translateX(0);}
-}
-
-@keyframes floatCard{
-0%{transform:translateY(0);}
-50%{transform:translateY(-5px);}
-100%{transform:translateY(0);}
-}
-
-/* SIDEBAR */
-.sidebar{
-width:240px;
-height:100vh;
-background:#1e3a8a;
-padding:20px;
-position:fixed;
-left:0;
-top:0;
-display:flex;
-flex-direction:column;
-animation:slideSidebar .6s ease;
-}
-
-.logo{
-color:white;
-margin-bottom:30px;
-text-align:center;
-}
-
-.sidebar a{
-color:white;
-text-decoration:none;
-padding:12px;
-border-radius:10px;
-margin-bottom:10px;
-transition:.3s;
-}
-
-.sidebar a:hover{
-background:#2563eb;
-transform:translateX(5px);
-}
-
-.sidebar .logout{
-margin-top:auto;
-background:#dc2626;
-text-align:center;
-}
-
-/* MAIN */
+/* ======================
+   MAIN LAYOUT
+====================== */
 .main{
 margin-left:240px;
 padding:30px;
-width:100%;
-animation:fadeIn .7s ease;
+min-height:100vh;
 }
 
-/* HEADER */
-.header{
+/* ======================
+   HEADER BOX (SEMUA PAGE)
+====================== */
+.top-box{
 background:#cbd5e1;
-padding:15px 20px;
-border-radius:15px;
-margin-bottom:20px;
-animation:fadeIn .8s ease;
-}
-
-/* SECTION */
-.section-title{
-margin:15px 0;
-font-size:20px;
-font-weight:bold;
-color:white;
-animation:fadeIn 1s ease;
-}
-
-/* CARD */
-.card-container{
+padding:25px 30px;
+border-radius:20px;
 display:flex;
-gap:20px;
-margin-bottom:20px;
+justify-content:space-between;
+align-items:center;
+margin-bottom:35px;
+box-shadow:0 6px 20px rgba(0,0,0,0.08);
 }
 
-.card{
-flex:1;
-background:rgba(255,255,255,0.2);
-padding:25px;
-border-radius:15px;
-color:white;
-animation:fadeIn 1.1s ease;
+.top-box h2{
+font-weight:600;
+color:#1e293b;
+}
+
+.top-box p{
+font-size:14px;
+color:#334155;
+}
+
+/* ======================
+   CARD AREA (SEMUA PAGE)
+====================== */
+.card-container,
+.card-grid{
+display:grid;
+grid-template-columns:repeat(2,1fr);
+gap:25px;
+margin-bottom:40px;
+}
+
+/* ======================
+   CARD STYLE UNIVERSAL
+====================== */
+.card,
+.finance-card{
+background:white;
+padding:30px;
+border-radius:20px;
+display:flex;
+align-items:center;
+gap:20px;
+box-shadow:0 8px 25px rgba(0,0,0,0.1);
 transition:.3s;
 }
 
-.card:hover{
-transform:scale(1.03);
-box-shadow:0 10px 20px rgba(0,0,0,0.2);
-animation:floatCard 2s infinite;
+.card:hover,
+.finance-card:hover{
+transform:translateY(-6px);
 }
 
-/* TABLE */
-.table-box{
-background:rgba(255,255,255,0.2);
-padding:15px;
+.card h3,
+.finance-card h3{
+font-size:24px;
+color:#2563eb;
+font-weight:600;
+margin-bottom:5px;
+}
+
+.card p,
+.finance-card p{
+font-size:14px;
+color:#64748b;
+}
+
+/* ICON */
+.icon{
+width:55px;
+height:55px;
+display:flex;
+align-items:center;
+justify-content:center;
 border-radius:15px;
+font-size:22px;
 color:white;
-animation:fadeIn 1.3s ease;
+}
+
+.blue{ background:#3b82f6; }
+.gold{ background:#f59e0b; }
+.green{ background:#10b981; }
+.pink{ background:#ec4899; }
+
+/* ======================
+   BUTTON PDF
+====================== */
+.btn-pdf{
+background:#3b82f6;
+color:white;
+padding:10px 20px;
+border-radius:12px;
+text-decoration:none;
+font-weight:500;
+transition:.3s;
+}
+
+.btn-pdf:hover{
+background:#2563eb;
+}
+
+/* ======================
+   SECTION TITLE
+====================== */
+.section-title,
+.table-title{
+color:white;
+margin-bottom:15px;
+font-weight:500;
+}
+
+/* ======================
+   TABLE STYLE UNIVERSAL
+====================== */
+.table-box,
+.table-wrapper{
+background:white;
+padding:20px;
+border-radius:20px;
+box-shadow:0 8px 25px rgba(0,0,0,0.1);
+overflow-x:auto;
+margin-bottom:20px;
 }
 
 table{
@@ -131,40 +149,42 @@ width:100%;
 border-collapse:collapse;
 }
 
-th, td{
-padding:10px;
+th{
+background:#3b82f6;
+color:white;
+padding:14px;
 text-align:left;
+font-weight:500;
 }
 
-thead{
-background:rgba(255,255,255,0.3);
+td{
+padding:14px;
+border-bottom:1px solid #e2e8f0;
+color:#334155;
 }
 
-.badge{
-background:#22c55e;
-padding:5px 12px;
-border-radius:10px;
-font-size:12px;
-transition:.3s;
+tr:hover{
+background:#f1f5f9;
 }
 
-.badge:hover{
-transform:scale(1.1);
-}
-
+/* STATUS SELECT */
 .status-select{
 padding:6px 10px;
 border-radius:8px;
-border:none;
-outline:none;
-background:#1e40af;
-color:white;
-cursor:pointer;
-transition:.3s;
+border:1px solid #cbd5e1;
+background:#f8fafc;
 }
 
-.status-select:hover{
-transform:scale(1.05);
-background:#2563eb;
+/* ======================
+   RESPONSIVE
+====================== */
+@media(max-width:992px){
+.main{
+margin-left:0;
 }
-    
+
+.card-container,
+.card-grid{
+grid-template-columns:1fr;
+}
+}

@@ -5,6 +5,7 @@ namespace App\Controllers;
 use App\Models\UserModel;
 use App\Models\CategoryModel;
 use App\Models\ProductModel;
+use App\Models\StudentModel; // TAMBAHAN
 use App\Models\LogActivityModel;
 
 class Admin extends BaseController
@@ -12,6 +13,7 @@ class Admin extends BaseController
     protected $userModel;
     protected $categoryModel;
     protected $productModel;
+    protected $studentModel; // TAMBAHAN
     protected $logModel;
 
     public function __construct()
@@ -19,6 +21,7 @@ class Admin extends BaseController
         $this->userModel     = new UserModel();
         $this->categoryModel = new CategoryModel();
         $this->productModel  = new ProductModel();
+        $this->studentModel  = new StudentModel(); // TAMBAHAN
         $this->logModel      = new LogActivityModel();
     }
 
@@ -34,7 +37,14 @@ class Admin extends BaseController
 
     public function index()
     {
-        return view('admin/dashboard');
+        $data = [
+            'totalUsers'    => $this->userModel->countAll(),
+            'totalKategori' => $this->categoryModel->countAll(),
+            'totalBahasa'   => $this->productModel->countAll(),
+            'totalSiswa'    => $this->studentModel->countAll(), // 🔥 TOTAL SISWA
+        ];
+
+        return view('admin/dashboard', $data);
     }
 
     // ================= CATEGORY =================
@@ -144,68 +154,71 @@ class Admin extends BaseController
         return redirect()->to('/admin/products');
     }
 
-    // ================= USERS =================
+// ================= USERS =================
 
-    public function users()
-    {
-        $data['users'] = $this->userModel->findAll();
-        return view('admin/users', $data);
+public function users()
+{
+    $data['users'] = $this->userModel->findAll();
+    return view('admin/users', $data);
+}
+
+public function createUser()
+{
+    return view('admin/create_user');
+}
+
+public function storeUser()
+{
+    $this->userModel->save([
+        'nama'     => $this->request->getPost('nama'),
+        'username' => $this->request->getPost('username'),
+
+        // TAMBAHAN PASSWORD
+        'password' => password_hash(
+            $this->request->getPost('password'),
+            PASSWORD_DEFAULT
+        ),
+
+        'role'   => $this->request->getPost('role'),
+        'status' => $this->request->getPost('status'),
+    ]);
+
+    $this->log('Tambah user');
+    return redirect()->to('/admin/users');
+}
+
+public function editUser($id)
+{
+    $data['user'] = $this->userModel->find($id);
+    return view('admin/edit_user', $data);
+}
+
+public function updateUser($id)
+{
+    $update = [
+        'nama'     => $this->request->getPost('nama'),
+        'username' => $this->request->getPost('username'),
+        'role'     => $this->request->getPost('role'),
+        'status'   => $this->request->getPost('status'),
+    ];
+
+    if ($this->request->getPost('password')) {
+        $update['password'] = password_hash(
+            $this->request->getPost('password'),
+            PASSWORD_DEFAULT
+        );
     }
 
-    public function createUser()
-    {
-        return view('admin/create_user');
-    }
+    $this->userModel->update($id, $update);
 
-    public function storeUser()
-    {
-        $this->userModel->save([
-            'nama'     => $this->request->getPost('nama'),
-            'username' => $this->request->getPost('username'),
-            'password' => password_hash(
-                $this->request->getPost('password'),
-                PASSWORD_DEFAULT
-            ),
-            'role'   => $this->request->getPost('role'),
-            'status' => $this->request->getPost('status'),
-        ]);
+    $this->log('Update user');
+    return redirect()->to('/admin/users');
+}
 
-        $this->log('Tambah user');
-        return redirect()->to('/admin/users');
-    }
-
-    public function editUser($id)
-    {
-        $data['user'] = $this->userModel->find($id);
-        return view('admin/edit_user', $data);
-    }
-
-    public function updateUser($id)
-    {
-        $update = [
-            'nama'     => $this->request->getPost('nama'),
-            'username' => $this->request->getPost('username'),
-            'role'     => $this->request->getPost('role'),
-            'status'   => $this->request->getPost('status'),
-        ];
-
-        if ($this->request->getPost('password')) {
-            $update['password'] = password_hash(
-                $this->request->getPost('password'),
-                PASSWORD_DEFAULT
-            );
-        }
-
-        $this->userModel->update($id, $update);
-
-        $this->log('Update user');
-        return redirect()->to('/admin/users');
-    }
-
-    public function deleteUser($id)
-    {
-        $this->userModel->delete($id);
-        $this->log('Hapus user');
-        return redirect()->to('/admin/users');
-    }
+public function deleteUser($id)
+{
+    $this->userModel->delete($id);
+    $this->log('Hapus user');
+    return redirect()->to('/admin/users');
+}
 }

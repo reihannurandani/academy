@@ -1,0 +1,93 @@
+/* ========================= */
+/* MAIN AREA */
+/* ========================= */
+.main {
+    margin-left: 250px;
+    padding: 40px;
+    background: #f1f5f9;
+    min-height: 100vh;
+    font-family: 'Poppins', sans-serif;
+}
+
+/* ========================= */
+/* HEADER */
+/* ========================= */
+.page-header {
+    background: #dbeafe;
+    padding: 20px 30px;
+    border-radius: 10px 10px 0 0;
+    font-weight: 600;
+}
+
+/* ========================= */
+/* BLUE SECTION */
+/* ========================= */
+.form-section {
+    background: #3b82f6;
+    padding: 30px;
+    border-radius: 0 0 20px 20px;
+}
+
+/* LABEL CAPSULE */
+/* ========================= */
+.form-label-badge {
+    background: #60a5fa;
+    color: white;
+    display: inline-block;
+    padding: 5px 20px;
+    border-radius: 20px;
+    margin-bottom: 20px;
+    font-size: 14px;
+}
+
+/* ========================= */
+/* FORM CARD */
+/* ========================= */
+.form-card {
+    background: #cbd5e1;
+    padding: 30px;
+    border-radius: 20px;
+}
+
+/* ========================= */
+/* INPUT STYLE */
+/* ========================= */
+.form-input {
+    width: 100%;
+    padding: 12px 20px;
+    border-radius: 25px;
+    border: none;
+    margin-bottom: 15px;
+    background: linear-gradient(to right, #4f8bd6, #6fa0df);
+    color: white;
+}
+
+.form-input::placeholder {
+    color: #e5e7eb;
+}
+
+select.form-input {
+    appearance: none;
+}
+
+/* ========================= */
+/* BUTTON */
+/* ========================= */
+.btn-update {
+    background: #60a5fa;
+    color: white;
+    border: none;
+    padding: 6px 20px;
+    border-radius: 20px;
+    float: right;
+}
+
+.btn-back {
+    background: #1e3a8a;
+    color: white;
+    padding: 6px 20px;
+    border-radius: 10px;
+    text-decoration: none;
+    display: inline-block;
+    margin-top: 20px;
+}

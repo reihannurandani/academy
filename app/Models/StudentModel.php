@@ -8,10 +8,15 @@ class StudentModel extends Model
 {
     protected $table = 'students';
     protected $primaryKey = 'id';
+
     protected $allowedFields = [
         'nama_siswa',
         'no_hp',
-        'alamat'
+        'alamat',
+        'id_kursus',
+        'id_kategori',
+        'status',
+        'created_at'
     ];
 
     protected $useTimestamps = false;

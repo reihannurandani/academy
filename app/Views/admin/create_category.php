@@ -1,5 +1,6 @@
 <?= view('layout/header') ?>
 <?= view('layout/sidebar') ?>
+<link rel="stylesheet" href="<?= base_url('assets/css/admin-form.css') ?>">
 
 <div class="main">
 
