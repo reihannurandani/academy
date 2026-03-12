@@ -118,6 +118,7 @@ class Admin extends BaseController
             'jam_kursus'   => $this->request->getPost('jam_kursus'),
             'kuota'        => $this->request->getPost('kuota'),
             'status'       => $this->request->getPost('status'),
+            'mentor'       => $this->request->getPost('mentor')
         ]);
 
         $this->log('Tambah produk');
@@ -141,6 +142,7 @@ class Admin extends BaseController
             'jam_kursus'   => $this->request->getPost('jam_kursus'),
             'kuota'        => $this->request->getPost('kuota'),
             'status'       => $this->request->getPost('status'),
+            'mentor'       =>$this->request->getPost('mentor')
         ]);
 
         $this->log('Update produk');

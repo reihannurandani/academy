@@ -25,7 +25,7 @@
                     required
                 >
 
-                <input 
+                <input  
                     name="nama" 
                     class="form-input" 
                     placeholder="Nama"

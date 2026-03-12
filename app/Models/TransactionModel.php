@@ -8,20 +8,23 @@ class TransactionModel extends Model
 {
     protected $table = 'transactions';
     protected $primaryKey = 'id';
+
     protected $allowedFields = [
         'invoice',
         'id_user',
         'id_siswa',
+        'tanggal_mulai',
+        'tanggal_selesai',
         'durasi',
         'total_harga',
         'uang_bayar',
         'uang_kembali',
-        'metode_pembayaran'
+        'metode_pembayaran',
+        'status'
     ];
 
     protected $useTimestamps = true;
     protected $createdField  = 'created_at';
-    protected $updatedField  = 'updated_at';
 
     public function getTransactionsWithUser()
     {

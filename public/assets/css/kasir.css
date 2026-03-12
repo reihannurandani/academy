@@ -339,3 +339,19 @@ font-weight:500;
 .transaksi-card .produk-card input:checked + .produk-inner{
 border:3px solid #3b82f6;
 }
+.status-badge{
+padding:5px 10px;
+border-radius:6px;
+font-size:13px;
+font-weight:600;
+}
+
+.status-aktif{
+background:#d4edda;
+color:#155724;
+}
+
+.status-selesai{
+background:#f8d7da;
+color:#721c24;
+}

@@ -24,9 +24,7 @@ $routes->group('admin', ['filter' => ['auth', 'role:admin']], function($routes){
     // Dashboard
     $routes->get('dashboard', 'Admin::index');
 
-    /*
-    ================= USERS =================
-    */
+    // USERS
     $routes->get('users', 'Admin::users');
     $routes->get('create-user', 'Admin::createUser');
     $routes->post('store-user', 'Admin::storeUser');
@@ -34,10 +32,7 @@ $routes->group('admin', ['filter' => ['auth', 'role:admin']], function($routes){
     $routes->post('update-user/(:num)', 'Admin::updateUser/$1');
     $routes->get('delete-user/(:num)', 'Admin::deleteUser/$1');
 
-
-    /*
-    ================= CATEGORIES =================
-    */
+    // CATEGORIES
     $routes->get('categories', 'Admin::categories');
     $routes->get('create-category', 'Admin::createCategory');
     $routes->post('store-category', 'Admin::storeCategory');
@@ -45,10 +40,7 @@ $routes->group('admin', ['filter' => ['auth', 'role:admin']], function($routes){
     $routes->post('update-category/(:num)', 'Admin::updateCategory/$1');
     $routes->get('delete-category/(:num)', 'Admin::deleteCategory/$1');
 
-
-    /*
-    ================= PRODUCTS =================
-    */
+    // PRODUCTS
     $routes->get('products', 'Admin::products');
     $routes->get('create-product', 'Admin::createProduct');
     $routes->post('store-product', 'Admin::storeProduct');
@@ -65,15 +57,19 @@ $routes->group('admin', ['filter' => ['auth', 'role:admin']], function($routes){
 */
 $routes->group('kasir', ['filter'=>['auth','role:kasir']], function($routes){
 
+    // DASHBOARD
+    $routes->get('/', 'Kasir::index');
     $routes->get('dashboard','Kasir::index');
 
+    // TRANSAKSI
     $routes->get('transaksi','Kasir::transaksi');
+    $routes->post('save-transaksi','Kasir::saveTransaksi');
 
-    // SAMA PERSIS DENGAN FORM
-    $routes->post('saveTransaksi','Kasir::saveTransaksi');
+    // STRUK
+    $routes->get('struk/(:num)', 'Kasir::struk/$1');
 
-    $routes->get('struk/(:num)','Kasir::struk/$1');
-});
+}); 
+
 
 /*
 |--------------------------------------------------------------------------
@@ -85,19 +81,13 @@ $routes->group('owner', ['filter' => ['auth', 'role:owner']], function($routes){
     // Dashboard
     $routes->get('dashboard', 'Owner::index');
 
-    /*
-    ================= LAPORAN =================
-    */
+    // LAPORAN
     $routes->get('laporan', 'Owner::laporan');
-    $routes->get('cetak-pdf', 'Owner::cetakPdf'); 
+    $routes->get('cetak-pdf', 'Owner::cetakPdf');
 
-    /*
-    ================= LOG ACTIVITY =================
-    */
+    // LOG ACTIVITY
     $routes->get('logs', 'Owner::logActivity');
 
-    /*
-    ================= UPDATE STATUS =================
-    */
+    // UPDATE STATUS
     $routes->post('update-status/(:num)', 'Owner::updateStatus/$1');
 });

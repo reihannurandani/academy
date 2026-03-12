@@ -29,6 +29,7 @@
                     <th>Harga</th>
                     <th>Jam</th>
                     <th>Kuota</th>
+                    <th>mentor</th>
                     <th>Status</th>
                     <th>Aksi</th>
                 </tr>
@@ -42,6 +43,7 @@
                     <td>Rp <?= number_format($p['harga_produk'],0,',','.') ?></td>
                     <td><?= esc($p['jam_kursus']) ?></td>
                     <td><?= esc($p['kuota']) ?></td>
+                    <td><?= esc($p['mentor']) ?></td>
                     <td>
                         <?php if($p['status']=='tersedia'): ?>
                             <span class="badge-success">tersedia</span>

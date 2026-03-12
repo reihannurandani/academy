@@ -78,22 +78,47 @@
                 </tr>
             </thead>
             <tbody>
-                <?php $no=1; foreach($students as $s): ?>
-                <tr>
-                    <td><?= $no++ ?></td>
-                    <td><?= $s['nama_siswa'] ?></td>
-                    <td><?= $s['kursus'] ?? '-' ?></td>
-                    <td><?= $s['kategori'] ?? '-' ?></td>
-                    <td>
-                        <form action="<?= base_url('owner/update-status/'.$s['id']) ?>" method="post">
-                            <select name="status" onchange="this.form.submit()" class="status-select">
-                                <option value="aktif" <?= $s['status']=='aktif'?'selected':'' ?>>Aktif</option>
-                                <option value="selesai" <?= $s['status']=='selesai'?'selected':'' ?>>Selesai</option>
-                            </select>
-                        </form>
-                    </td>
-                </tr>
-                <?php endforeach ?>
+            <?php $no=1; foreach($students as $s): 
+
+            $today = date('Y-m-d');
+
+            if(isset($s['tanggal_selesai'])){
+                if($s['tanggal_selesai'] >= $today){
+                    $status = 'aktif';
+                }else{
+                    $status = 'selesai';
+                }
+            }else{
+                $status = 'aktif';
+            }
+
+            ?>
+
+            <tr>
+            <td><?= $no++ ?></td>
+            <td><?= $s['nama_siswa'] ?></td>
+            <td><?= $s['kursus'] ?? '-' ?></td>
+            <td><?= $s['kategori'] ?? '-' ?></td>
+
+            <td>
+            <?php if($status == 'aktif'): ?>
+
+            <span style="color:green;font-weight:bold">
+            Aktif
+            </span>
+
+            <?php else: ?>
+
+            <span style="color:red;font-weight:bold">
+            Selesai
+            </span>
+
+            <?php endif; ?>
+            </td>
+
+            </tr>
+
+            <?php endforeach ?>
             </tbody>
         </table>
     </div>

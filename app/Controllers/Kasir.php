@@ -2,6 +2,7 @@
 
 namespace App\Controllers;
 
+use App\Controllers\BaseController;
 use App\Models\ProductModel;
 use App\Models\CategoryModel;
 use App\Models\StudentModel;
@@ -21,6 +22,8 @@ class Kasir extends BaseController
 
     public function __construct()
     {
+        date_default_timezone_set('Asia/Jakarta');
+
         $this->productModel     = new ProductModel();
         $this->categoryModel    = new CategoryModel();
         $this->studentModel     = new StudentModel();
@@ -35,21 +38,33 @@ class Kasir extends BaseController
     // ==============================
     public function index()
     {
-        $data['products'] = $this->productModel->findAll();
+
+        $data['products'] = $this->db->query("
+            SELECT 
+                products.*,
+                categories.nama_kategori as kategori
+            FROM products
+            LEFT JOIN categories 
+            ON categories.id = products.id_kategori
+        ")->getResultArray();
 
         $data['categories'] = $this->categoryModel->findAll();
-        $data['totalKategori'] = $this->categoryModel->countAll();
 
+        // SISWA TERDAFTAR
         $data['siswa_daftar'] = $this->db->query("
             SELECT 
                 students.nama_siswa,
+                transactions.tanggal_selesai,
                 GROUP_CONCAT(products.nama_produk SEPARATOR ', ') as kursus
             FROM transactions
-            JOIN students ON students.id = transactions.id_siswa
-            JOIN transaction_details ON transaction_details.id_transaksi = transactions.id
-            JOIN products ON products.id = transaction_details.id_produk
-            GROUP BY students.id
-            ORDER BY students.id DESC
+            JOIN students 
+            ON students.id = transactions.id_siswa
+            LEFT JOIN transaction_details 
+            ON transaction_details.id_transaksi = transactions.id
+            LEFT JOIN products 
+            ON products.id = transaction_details.id_produk
+            GROUP BY transactions.id
+            ORDER BY transactions.id DESC
         ")->getResultArray();
 
         return view('kasir/dashboard', $data);
@@ -60,6 +75,7 @@ class Kasir extends BaseController
     // ==============================
     public function transaksi()
     {
+
         $data['products'] = $this->productModel
             ->where('kuota >', 0)
             ->findAll();
@@ -70,147 +86,160 @@ class Kasir extends BaseController
     // ==============================
     // SIMPAN TRANSAKSI
     // ==============================
-    public function saveTransaksi()
-    {
-        $produkDipilih = $this->request->getPost('id_produk');
-        $durasi        = (int) $this->request->getPost('durasi');
-        $bayar         = (int) $this->request->getPost('uang_bayar');
+public function saveTransaksi()
+{
 
-        if (!$produkDipilih) {
-            return redirect()->back()->with('error','Pilih minimal 1 bahasa');
-        }
+    $nama_siswa     = $this->request->getPost('nama_siswa');
+    $no_hp          = $this->request->getPost('no_hp');
+    $alamat         = $this->request->getPost('alamat');
+    $produkDipilih  = $this->request->getPost('id_produk');
+    $durasi         = (int) $this->request->getPost('durasi');
+    $bayar          = (int) $this->request->getPost('uang_bayar');
+    $tanggal_mulai  = $this->request->getPost('tanggal_mulai');
 
-        if ($durasi <= 0) {
-            return redirect()->back()->with('error','Durasi tidak valid');
-        }
-
-        $this->db->transStart();
-
-        // =============================
-        // AMBIL DATA PRODUK PERTAMA
-        // =============================
-        $produkPertama = $this->productModel->find($produkDipilih[0]);
-
-        $id_kursus   = $produkPertama['id'];
-        $id_kategori = $produkPertama['id_kategori'];
-
-        // =============================
-        // SIMPAN SISWA
-        // =============================
-        $this->studentModel->insert([
-            'nama_siswa'  => $this->request->getPost('nama_siswa'),
-            'no_hp'       => $this->request->getPost('no_hp'),
-            'alamat'      => $this->request->getPost('alamat'),
-            'id_kursus'   => $id_kursus,
-            'id_kategori' => $id_kategori,
-            'status'      => 'aktif',
-            'created_at'  => date('Y-m-d H:i:s')
-        ]);
-
-        $id_siswa = $this->studentModel->getInsertID();
-
-        $total = 0;
-
-        foreach ($produkDipilih as $id_produk) {
-            $produk = $this->productModel->find($id_produk);
-
-            if ($produk && $produk['kuota'] > 0) {
-                $total += $produk['harga_produk'] * $durasi;
-            }
-        }
-
-        if ($bayar < $total) {
-            return redirect()->back()->with('error','Uang bayar kurang');
-        }
-
-        $kembalian = $bayar - $total;
-        $invoice   = 'INV-' . date('YmdHis');
-
-        // =============================
-        // SIMPAN TRANSAKSI
-        // =============================
-        $this->transactionModel->insert([
-            'invoice'      => $invoice,
-            'id_user'      => session()->get('id'),
-            'id_siswa'     => $id_siswa,
-            'durasi'       => $durasi,
-            'total_harga'  => $total,
-            'uang_bayar'   => $bayar,
-            'uang_kembali' => $kembalian,
-            'metode_pembayaran' => 'tunai',
-            'created_at'   => date('Y-m-d H:i:s'),
-            'updated_at'   => date('Y-m-d H:i:s')
-        ]);
-
-        $id_transaksi = $this->transactionModel->getInsertID();
-
-        foreach ($produkDipilih as $id_produk) {
-
-            $produk = $this->productModel->find($id_produk);
-
-            if ($produk && $produk['kuota'] > 0) {
-
-                $harga    = $produk['harga_produk'];
-                $qty      = $durasi;
-                $subtotal = $harga * $qty;
-
-                $this->detailModel->insert([
-                    'id_transaksi' => $id_transaksi,
-                    'id_produk'    => $id_produk,
-                    'harga'        => $harga,
-                    'qty'          => $qty,
-                    'subtotal'     => $subtotal
-                ]);
-
-                $this->productModel->update($id_produk, [
-                    'kuota' => $produk['kuota'] - 1
-                ]);
-            }
-        }
-
-        $this->logModel->insert([
-            'id_user'  => session()->get('id'),
-            'activity' => 'Menambahkan transaksi dengan Invoice ' . $invoice
-        ]);
-
-        $this->db->transComplete();
-
-        if ($this->db->transStatus() === FALSE) {
-            return redirect()->back()->with('error','Terjadi kesalahan saat menyimpan transaksi');
-        }
-
-        return redirect()->to(base_url('kasir/struk/'.$id_transaksi));
+    if(!$nama_siswa || !$no_hp){
+        return redirect()->to('/kasir/transaksi')->with('error','Data siswa belum lengkap');
     }
+
+    if(!$produkDipilih){
+        return redirect()->to('/kasir/transaksi')->with('error','Pilih minimal 1 bahasa');
+    }
+
+    if($durasi <= 0){
+        return redirect()->to('/kasir/transaksi')->with('error','Durasi tidak valid');
+    }
+
+    if(!$tanggal_mulai){
+        return redirect()->to('/kasir/transaksi')->with('error','Tanggal mulai wajib diisi');
+    }
+
+    $this->db->transStart();
+
+    // tanggal selesai
+    $tanggal_selesai = date(
+        'Y-m-d',
+        strtotime("+$durasi month", strtotime($tanggal_mulai))
+    );
+
+    // simpan siswa
+    $this->studentModel->insert([
+        'nama_siswa' => $nama_siswa,
+        'no_hp'      => $no_hp,
+        'alamat'     => $alamat,
+        'status'     => 'aktif',
+        'created_at' => date('Y-m-d H:i:s')
+    ]);
+
+    $id_siswa = $this->studentModel->getInsertID();
+
+    // hitung total
+    $total = 0;
+
+    foreach ($produkDipilih as $id_produk){
+
+        $produk = $this->productModel->find($id_produk);
+
+        if(!$produk){
+            return redirect()->to('/kasir/transaksi')->with('error','Produk tidak ditemukan');
+        }
+
+        if($produk['kuota'] <= 0){
+            return redirect()->to('/kasir/transaksi')->with('error','Kuota kursus habis');
+        }
+
+        $total += $produk['harga_produk'] * $durasi;
+    }
+
+    if($bayar < $total){
+        return redirect()->to('/kasir/transaksi')->with('error','Uang bayar kurang');
+    }
+
+    $kembalian = $bayar - $total;
+
+    $invoice = 'INV'.date('YmdHis');
+
+    // simpan transaksi
+    $this->transactionModel->insert([
+        'invoice'          => $invoice,
+        'id_user'          => session()->get('id'),
+        'id_siswa'         => $id_siswa,
+        'tanggal_mulai'    => $tanggal_mulai,
+        'tanggal_selesai'  => $tanggal_selesai,
+        'durasi'           => $durasi,
+        'total_harga'      => $total,
+        'uang_bayar'       => $bayar,
+        'uang_kembali'     => $kembalian,
+        'metode_pembayaran'=> 'tunai',
+        'status'           => 'lunas',
+        'created_at'       => date('Y-m-d H:i:s')
+    ]);
+
+    $id_transaksi = $this->transactionModel->getInsertID();
+
+    // simpan detail
+    foreach ($produkDipilih as $id_produk){
+
+        $produk = $this->productModel->find($id_produk);
+
+        $harga    = $produk['harga_produk'];
+        $qty      = $durasi;
+        $subtotal = $harga * $qty;
+
+        $this->detailModel->insert([
+            'id_transaksi' => $id_transaksi,
+            'id_produk'    => $id_produk,
+            'harga'        => $harga,
+            'qty'          => $qty,
+            'subtotal'     => $subtotal
+        ]);
+
+        // kurangi kuota
+        $this->productModel->update($id_produk,[
+            'kuota' => $produk['kuota'] - 1
+        ]);
+    }
+
+// log activity
+$this->logModel->insert([
+    'id_user'  => session()->get('id'),
+    'activity' => 'Menambahkan transaksi '.$invoice
+]);
+
+$this->db->transComplete();
+
+return redirect()->to(base_url('kasir/struk/'.$id_transaksi));
+}
 
     // ==============================
     // STRUK
     // ==============================
-    public function struk($id)
-    {
-        $transaksi = $this->transactionModel
-            ->select('transactions.*, students.nama_siswa')
-            ->join('students','students.id = transactions.id_siswa')
-            ->where('transactions.id',$id)
-            ->first();
+public function struk($id)
+{
 
-        if (!$transaksi) {
-            return redirect()->to(base_url('kasir/dashboard'));
-        }
+    // ambil transaksi dulu
+    $transaksi = $this->transactionModel->find($id);
 
-        $detail = $this->detailModel
-            ->select('products.nama_produk, transaction_details.harga, transaction_details.qty, transaction_details.subtotal')
-            ->join('products','products.id = transaction_details.id_produk')
-            ->where('transaction_details.id_transaksi',$id)
-            ->findAll();
-
-        $this->logModel->insert([
-            'id_user'  => session()->get('id'),
-            'activity' => 'Mencetak struk transaksi Invoice ' . $transaksi['invoice']
-        ]);
-
-        return view('kasir/struk', [
-            'transaksi' => $transaksi,
-            'detail'    => $detail
-        ]);
+    if(!$transaksi){
+        echo "Transaksi tidak ditemukan";
+        exit;
     }
+
+    // ambil data siswa
+    $siswa = $this->studentModel->find($transaksi['id_siswa']);
+
+    // ambil detail transaksi
+    $detail = $this->detailModel
+        ->select('products.nama_produk, transaction_details.harga, transaction_details.qty, transaction_details.subtotal')
+        ->join('products','products.id = transaction_details.id_produk')
+        ->where('transaction_details.id_transaksi',$id)
+        ->findAll();
+
+    // gabungkan nama siswa ke transaksi
+    $transaksi['nama_siswa'] = $siswa['nama_siswa'] ?? '-';
+
+    return view('kasir/struk',[
+        'transaksi'=>$transaksi,
+        'detail'=>$detail
+    ]);
+}
 }

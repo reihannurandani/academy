@@ -1,77 +1,115 @@
-<?= view('layout/header') ?>
-<?= view('layout/sidebar') ?>
-
 <div class="container mt-4">
 
-    <div class="card p-4 shadow" style="max-width:600px;margin:auto;">
-        <h4 class="text-center mb-3">GLOBAL LANGUAGE ACADEMY 🌍</h4>
-        <hr>
+<div class="card shadow" style="max-width:420px;margin:auto;font-family:monospace">
 
-        <p><strong>Invoice:</strong> 
-            <?= $transaksi['invoice'] ?? 'INV-'.str_pad($transaksi['id'], 5, '0', STR_PAD_LEFT) ?>
-        </p>
+<div class="card-body">
 
-        <p><strong>Nama Siswa:</strong> <?= $transaksi['nama_siswa'] ?></p>
+<div class="text-center">
+<h5>GLOBAL LANGUAGE ACADEMY</h5>
+<small>Kursus Bahasa Internasional</small>
+</div>
 
-        <p><strong>Tanggal:</strong> 
-            <?= date('d-m-Y', strtotime($transaksi['created_at'])) ?>
-        </p>
+<hr style="border-top:dashed 1px">
 
-        <hr>
+<p>
+Invoice : <?= $transaksi['invoice'] ?><br>
+Tanggal : <?= date('d-m-Y H:i', strtotime($transaksi['created_at'])) ?><br>
+Siswa   : <?= $transaksi['nama_siswa'] ?>
+</p>
 
-        <?php 
-            $namaProgram = [];
-            $hargaSatuan = [];
-            $totalQty = 0;
-            $subtotal = 0;
+<hr style="border-top:dashed 1px">
 
-            foreach ($detail as $d) {
-                $namaProgram[] = $d['nama_produk'];
-                $hargaSatuan[] = number_format($d['harga'], 0, ',', '.');
-                $totalQty += $d['qty'];
-                $subtotal += $d['subtotal'];
-            }
-        ?>
+<p>
+Mulai   : <?= date('d-m-Y', strtotime($transaksi['tanggal_mulai'])) ?><br>
+Selesai : <?= date('d-m-Y', strtotime($transaksi['tanggal_selesai'])) ?><br>
+Durasi  : <?= $transaksi['durasi'] ?> Bulan
+</p>
 
-        <p><strong>Program:</strong> 
-            <?= implode(', ', $namaProgram) ?>
-        </p>
+<hr style="border-top:dashed 1px">
 
-        <p><strong>Harga Satuan:</strong> 
-            Rp <?= implode(', ', $hargaSatuan) ?>
-        </p>
+<table width="100%">
+<thead>
+<tr>
+<th align="left">Program</th>
+<th align="center">/bln</th>
+<th align="right">Harga</th>
+</tr>
+</thead>
 
-        <p><strong>Qty:</strong> <?= $totalQty ?></p>
+<tbody>
 
-        <p><strong>Subtotal:</strong> 
-            Rp <?= number_format($subtotal, 0, ',', '.') ?>
-        </p>
+<?php foreach($detail as $d): ?>
 
-        <hr>
+<tr>
+<td><?= $d['nama_produk'] ?></td>
+<td align="center"><?= $d['qty'] ?></td>
+<td align="right">
+Rp <?= number_format($d['subtotal'],0,',','.') ?>
+</td>
+</tr>
 
-        <p><strong>Total:</strong> 
-            Rp <?= number_format($transaksi['total_harga'], 0, ',', '.') ?>
-        </p>
+<?php endforeach; ?>
 
-        <p><strong>Bayar:</strong> 
-            Rp <?= number_format($transaksi['uang_bayar'], 0, ',', '.') ?>
-        </p>
+</tbody>
+</table>
 
-        <p><strong>Kembali:</strong> 
-            Rp <?= number_format($transaksi['uang_kembali'], 0, ',', '.') ?>
-        </p>
+<hr style="border-top:dashed 1px">
 
-        <p><strong>Status:</strong> 
-            <span class="badge bg-success">LUNAS</span>
-        </p>
+<table width="100%">
 
-        <div class="text-center mt-3">
-            <button onclick="window.print()" class="btn btn-primary">
-                Print Struk
-            </button>
-        </div>
-    </div>
+<tr>
+<td>Total</td>
+<td align="right">
+Rp <?= number_format($transaksi['total_harga'],0,',','.') ?>
+</td>
+</tr>
+
+<tr>
+<td>Bayar</td>
+<td align="right">
+Rp <?= number_format($transaksi['uang_bayar'],0,',','.') ?>
+</td>
+</tr>
+
+<tr>
+<td>Kembali</td>
+<td align="right">
+Rp <?= number_format($transaksi['uang_kembali'],0,',','.') ?>
+</td>
+</tr>
+
+</table>
+
+<hr style="border-top:dashed 1px">
+
+<p class="text-center">
+Status : <b>LUNAS</b>
+</p>
+
+<p class="text-center">
+Terima kasih telah mendaftar
+</p>
+
+<p class="text-center">
+<b>Hari Minggu Libur</b>
+</p>
+
+<div class="text-center mt-3 no-print">
+<button onclick="window.print()" class="btn btn-primary btn-sm">
+Print Struk
+</button>
+</div>
 
 </div>
+</div>
+</div>
+
+<style>
+@media print{
+.no-print{
+display:none;
+}
+}
+</style>
 
 <?= view('layout/footer') ?>

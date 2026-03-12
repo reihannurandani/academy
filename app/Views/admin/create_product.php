@@ -10,8 +10,8 @@
 
         <form method="post" action="<?= base_url('admin/store-product') ?>" class="form-user">
 
-            <label>Kategori</label>
-            <select name="id_kategori" required>
+            <label for="id_kategori">Kategori</label>
+            <select name="id_kategori" id="id_kategori" required>
                 <?php foreach($categories as $c): ?>
                     <option value="<?= $c['id'] ?>">
                         <?= esc($c['nama_kategori']) ?>
@@ -19,15 +19,23 @@
                 <?php endforeach; ?>
             </select>
 
-            <input type="text" name="nama_produk" placeholder="Nama Produk" required>
+            <label for="nama_produk">Nama Produk</label>
+            <input type="text" name="nama_produk" id="nama_produk" placeholder="Nama Produk" required>
 
-            <input type="number" name="harga_produk" placeholder="Harga" required>
+            <label for="harga_produk">Harga</label>
+            <input type="number" name="harga_produk" id="harga_produk" placeholder="Harga" required>
 
-            <input type="text" name="jam_kursus" placeholder="Jam Kursus (contoh: 13:00 - 15:00)" required>
+            <label for="jam_kursus">Jam Kursus</label>
+            <input type="text" name="jam_kursus" id="jam_kursus" placeholder="Jam Kursus (contoh: 13:00 - 15:00)" required>
 
-            <input type="number" name="kuota" placeholder="Kuota">
+            <label for="kuota">Kuota</label>
+            <input type="number" name="kuota" id="kuota" placeholder="Kuota">
 
-            <select name="status">
+            <label for="mentor">Mentor</label>
+            <input type="text" name="mentor" id="mentor" placeholder="Mentor">
+
+            <label for="status">Status</label>
+            <select name="status" id="status">
                 <option value="tersedia">Tersedia</option>
                 <option value="tidak tersedia">Tidak Tersedia</option>
             </select>

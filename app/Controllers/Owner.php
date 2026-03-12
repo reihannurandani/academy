@@ -8,7 +8,6 @@ use App\Models\TransactionModel;
 use App\Models\LogActivityModel;
 use App\Models\StudentModel;
 use App\Models\UserModel;
-use Dompdf\Dompdf;
 
 class Owner extends BaseController
 {
@@ -34,15 +33,21 @@ class Owner extends BaseController
     {
         $db = \Config\Database::connect();
 
+        $todayStart = date('Y-m-d 00:00:00');
+        $todayEnd   = date('Y-m-d 23:59:59');
+
+        // TOTAL PENDAPATAN
         $totalPendapatan = $db->table('transactions')
             ->selectSum('total_harga')
             ->get()
             ->getRow()
             ->total_harga ?? 0;
 
+        // PENDAPATAN HARI INI
         $pendapatanHariIni = $db->table('transactions')
             ->selectSum('total_harga')
-            ->where('DATE(created_at)', date('Y-m-d'))
+            ->where('created_at >=', $todayStart)
+            ->where('created_at <=', $todayEnd)
             ->get()
             ->getRow()
             ->total_harga ?? 0;
@@ -50,14 +55,25 @@ class Owner extends BaseController
         $totalUser  = $this->userModel->countAll();
         $totalSiswa = $this->studentModel->countAll();
 
+        // DATA SISWA + KURSUS + KATEGORI
         $students = $db->table('students')
-            ->select('students.*, products.nama_produk as kursus, categories.nama_kategori as kategori')
-            ->join('products', 'products.id = students.id_kursus', 'left')
-            ->join('categories', 'categories.id = students.id_kategori', 'left')
+            ->select("
+                students.id,
+                students.nama_siswa,
+                students.no_hp,
+                students.status,
+                GROUP_CONCAT(DISTINCT products.nama_produk SEPARATOR ', ') as kursus,
+                GROUP_CONCAT(DISTINCT categories.nama_kategori SEPARATOR ', ') as kategori
+            ")
+            ->join('transactions', 'transactions.id_siswa = students.id', 'left')
+            ->join('transaction_details', 'transaction_details.id_transaksi = transactions.id', 'left')
+            ->join('products', 'products.id = transaction_details.id_produk', 'left')
+            ->join('categories', 'categories.id = products.id_kategori', 'left')
+            ->groupBy('students.id')
             ->orderBy('students.id', 'DESC')
             ->get()
             ->getResultArray();
-
+            
         return view('owner/dashboard', [
             'totalPendapatan'   => $totalPendapatan,
             'pendapatanHariIni' => $pendapatanHariIni,
@@ -78,7 +94,7 @@ class Owner extends BaseController
             'status' => $status
         ]);
 
-        return redirect()->back()->with('success', 'Status berhasil diubah');
+        return redirect()->back()->with('success','Status berhasil diubah');
     }
 
     // =============================
@@ -88,39 +104,49 @@ class Owner extends BaseController
     {
         $db = \Config\Database::connect();
 
-        $hariIni  = date('Y-m-d');
-        $bulanIni = date('Y-m');
+        $todayStart = date('Y-m-d 00:00:00');
+        $todayEnd   = date('Y-m-d 23:59:59');
 
+        $month = date('m');
+        $year  = date('Y');
+
+        // PENDAPATAN HARI INI
         $pendapatanHariIni = $db->table('transactions')
             ->selectSum('total_harga')
-            ->where('DATE(created_at)', $hariIni)
+            ->where('created_at >=',$todayStart)
+            ->where('created_at <=',$todayEnd)
             ->get()
             ->getRow()
             ->total_harga ?? 0;
 
+        // PENDAPATAN BULAN INI
         $pendapatanBulanIni = $db->table('transactions')
             ->selectSum('total_harga')
-            ->where("DATE_FORMAT(created_at,'%Y-%m') =", $bulanIni)
+            ->where('MONTH(created_at)', $month)
+            ->where('YEAR(created_at)', $year)
             ->get()
             ->getRow()
             ->total_harga ?? 0;
 
+        // TOTAL PENDAPATAN
         $totalPendapatan = $db->table('transactions')
             ->selectSum('total_harga')
             ->get()
             ->getRow()
             ->total_harga ?? 0;
 
+        // TOTAL TRANSAKSI
         $totalTransaksi = $db->table('transactions')
             ->countAllResults();
 
+        // DATA TRANSAKSI
         $transactions = $db->table('transactions')
-            ->select('invoice, total_harga, created_at')
-            ->orderBy('created_at', 'DESC')
+            ->select('invoice,total_harga,created_at')
+            ->orderBy('created_at','DESC')
             ->get()
             ->getResultArray();
 
-        return view('owner/laporan', [
+        return view('owner/laporan',[
             'pendapatanHariIni'  => $pendapatanHariIni,
             'pendapatanBulanIni' => $pendapatanBulanIni,
             'totalPendapatan'    => $totalPendapatan,
@@ -132,62 +158,31 @@ class Owner extends BaseController
     // =============================
     // CETAK PDF
     // =============================
-public function cetakPdf()
-{
-    $db = \Config\Database::connect();
+    public function cetakPdf()
+    {
+        $db = \Config\Database::connect();
 
-    $hariIni  = date('Y-m-d');
-    $bulanIni = date('Y-m');
+        $transactions = $db->table('transactions')
+            ->select('invoice,total_harga,created_at')
+            ->orderBy('created_at','DESC')
+            ->get()
+            ->getResultArray();
 
-    // ================= RINGKASAN =================
-    $pendapatanHariIni = $db->table('transactions')
-        ->selectSum('total_harga')
-        ->where('DATE(created_at)', $hariIni)
-        ->get()
-        ->getRow()
-        ->total_harga ?? 0;
+        $html = view('owner/laporan_pdf',[
+            'transactions'=>$transactions
+        ]);
 
-    $pendapatanBulanIni = $db->table('transactions')
-        ->selectSum('total_harga')
-        ->where("DATE_FORMAT(created_at,'%Y-%m') =", $bulanIni)
-        ->get()
-        ->getRow()
-        ->total_harga ?? 0;
+        $dompdf = new \Dompdf\Dompdf();
+        $dompdf->loadHtml($html);
+        $dompdf->setPaper('A4','portrait');
+        $dompdf->render();
 
-    $totalPendapatan = $db->table('transactions')
-        ->selectSum('total_harga')
-        ->get()
-        ->getRow()
-        ->total_harga ?? 0;
+        return $this->response
+            ->setHeader('Content-Type','application/pdf')
+            ->setHeader('Content-Disposition','attachment; filename="laporan-keuangan.pdf"')
+            ->setBody($dompdf->output());
+    }
 
-    $totalTransaksi = $db->table('transactions')
-        ->countAllResults();
-
-    // ================= DATA TRANSAKSI =================
-    $transactions = $db->table('transactions')
-        ->select('invoice, total_harga, created_at')
-        ->orderBy('created_at', 'DESC')
-        ->get()
-        ->getResultArray();
-
-    $html = view('owner/laporan_pdf', [
-        'transactions'        => $transactions,
-        'pendapatanHariIni'   => $pendapatanHariIni,
-        'pendapatanBulanIni'  => $pendapatanBulanIni,
-        'totalPendapatan'     => $totalPendapatan,
-        'totalTransaksi'      => $totalTransaksi
-    ]);
-
-    $dompdf = new \Dompdf\Dompdf();
-    $dompdf->loadHtml($html);
-    $dompdf->setPaper('A4', 'portrait');
-    $dompdf->render();
-
-    return $this->response
-        ->setHeader('Content-Type', 'application/pdf')
-        ->setHeader('Content-Disposition', 'attachment; filename="laporan-keuangan.pdf"')
-        ->setBody($dompdf->output());
-}
     // =============================
     // LOG ACTIVITY
     // =============================
@@ -195,9 +190,9 @@ public function cetakPdf()
     {
         $data['logs'] = $this->logModel
             ->select('log_activity.*, users.nama')
-            ->join('users', 'users.id = log_activity.id_user')
+            ->join('users','users.id = log_activity.id_user')
             ->findAll();
 
-        return view('owner/log', $data);
+        return view('owner/log',$data);
     }
 }

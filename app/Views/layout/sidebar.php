@@ -11,7 +11,7 @@
             <a href="<?= base_url('admin/dashboard') ?>"><i class="fa fa-home"></i> Dashboard</a>
             <a href="<?= base_url('admin/users') ?>"><i class="fa fa-users"></i> Users</a>
             <a href="<?= base_url('admin/categories') ?>"><i class="fa fa-layer-group"></i> Categories</a>
-            <a href="<?= base_url('admin/products') ?>"><i class="fa fa-language"></i> Bahasa</a>
+            <a href="<?= base_url('admin/products') ?>"><i class="fa fa-language"></i> Mapel</a>
         <?php endif; ?>
 
         <?php if($role == 'kasir'): ?>

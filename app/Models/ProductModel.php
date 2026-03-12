@@ -15,7 +15,8 @@ class ProductModel extends Model
         'harga_produk',
         'jam_kursus',
         'kuota',
-        'status'
+        'status',
+        'mentor'        
     ];
 
     protected $useTimestamps = true;
