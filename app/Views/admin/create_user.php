@@ -4,64 +4,55 @@
 
 <div class="main">
 
-    <div class="page-header">
-        Kelola User
-    </div>
+    <h3>Tambah User</h3>
 
-    <div class="form-section">
+    <div class="table-box" style="max-width:500px;">
 
-        <div class="form-label-badge">
-            tambah
-        </div>
+        <form method="post" action="<?= base_url('admin/store-user') ?>" class="form-user">
 
-        <div class="form-card">
+            <input 
+                type="text"
+                name="username" 
+                placeholder="Username"
+                required
+            >
 
-            <form method="post" action="<?= base_url('admin/store-user') ?>">
+            <input  
+                type="text"
+                name="nama" 
+                placeholder="Nama"
+                required
+            >
 
-                <input 
-                    name="username" 
-                    class="form-input" 
-                    placeholder="Username"
-                    required
-                >
+            <input 
+                type="password"
+                name="password"
+                placeholder="Password"
+                required
+            >
 
-                <input  
-                    name="nama" 
-                    class="form-input" 
-                    placeholder="Nama"
-                    required
-                >
+            <select name="role" required>
+                <option value="">Pilih Role</option>
+                <option value="admin">Admin</option>
+                <option value="kasir">Kasir</option>
+                <option value="owner">Owner</option>
+            </select>
 
-                <input 
-                    type="password"
-                    name="password"
-                    class="form-input"
-                    placeholder="Password"
-                    required
-                >
+            <select name="status" required>
+                <option value="">Pilih Status</option>
+                <option value="aktif">Aktif</option>
+                <option value="nonaktif">Nonaktif</option>
+            </select>
 
-                <select name="role" class="form-input">
-                    <option value="admin">Admin</option>
-                    <option value="kasir">Kasir</option>
-                    <option value="owner">Owner</option>
-                </select>
+            <button class="tambah">
+                Simpan
+            </button>
 
-                <select name="status" class="form-input">
-                    <option value="aktif">Aktif</option>
-                    <option value="nonaktif">Nonaktif</option>
-                </select>
+            <a href="<?= base_url('admin/users') ?>" class="kembali">
+                ← Kembali
+            </a>
 
-                <button type="submit" class="btn-update">
-                    Simpan
-                </button>
-
-            </form>
-
-        </div>
-
-        <a href="<?= base_url('admin/users') ?>" class="btn-back">
-            kembali
-        </a>
+        </form>
 
     </div>
 

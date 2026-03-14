@@ -5,7 +5,7 @@
 <div class="main">
 
     <div class="page-header">
-        <h2>Kelola Bahasa</h2>
+        <h2>Kelola Mapel</h2>
     </div>
 
     <div class="menu-container">
@@ -16,11 +16,11 @@
             </a>
 
             <div class="search-box">
-                <input type="text" placeholder="Cari...">
+                <input type="text" id="searchProduct" placeholder="Cari...">
             </div>
         </div>
 
-        <table class="table-custom">
+        <table class="table-custom" id="tableProduct">
             <thead>
                 <tr>
                     <th>No</th>
@@ -93,6 +93,26 @@ function openModal(id) {
 function closeModal() {
     document.getElementById("confirmModal").style.display = "none";
 }
+
+// SEARCH PRODUCT
+document.getElementById("searchProduct").addEventListener("keyup", function() {
+
+    let input = this.value.toLowerCase();
+    let rows = document.querySelectorAll("#tableProduct tbody tr");
+
+    rows.forEach(function(row){
+
+        let text = row.innerText.toLowerCase();
+
+        if(text.includes(input)){
+            row.style.display = "";
+        }else{
+            row.style.display = "none";
+        }
+
+    });
+
+});
 </script>
 
 <?= view('layout/footer') ?>

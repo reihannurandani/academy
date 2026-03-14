@@ -13,6 +13,17 @@
 </head>
 <body>
 
+<?php
+// =======================
+// DEFAULT VALUE AGAR TIDAK ERROR
+// =======================
+$totalTransaksi     = $totalTransaksi ?? 0;
+$pendapatanHariIni  = $pendapatanHariIni ?? 0;
+$pendapatanBulanIni = $pendapatanBulanIni ?? 0;
+$totalPendapatan    = $totalPendapatan ?? 0;
+$transactions       = $transactions ?? [];
+?>
+
 <h2>LAPORAN KEUANGAN</h2>
 
 <!-- ================= RINGKASAN ================= -->
@@ -48,14 +59,22 @@
         </tr>
     </thead>
     <tbody>
-        <?php $no = 1; foreach($transactions as $t): ?>
-        <tr>
-            <td><?= $no++ ?></td>
-            <td><?= $t['invoice'] ?></td>
-            <td>Rp <?= number_format($t['total_harga'],0,',','.') ?></td>
-            <td><?= date('d-m-Y', strtotime($t['created_at'])) ?></td>
-        </tr>
-        <?php endforeach; ?>
+
+        <?php if(!empty($transactions)): ?>
+            <?php $no = 1; foreach($transactions as $t): ?>
+            <tr>
+                <td><?= $no++ ?></td>
+                <td><?= $t['invoice'] ?></td>
+                <td>Rp <?= number_format($t['total_harga'],0,',','.') ?></td>
+                <td><?= date('d-m-Y', strtotime($t['created_at'])) ?></td>
+            </tr>
+            <?php endforeach; ?>
+        <?php else: ?>
+            <tr>
+                <td colspan="4">Tidak ada data transaksi</td>
+            </tr>
+        <?php endif; ?>
+
     </tbody>
 </table>
 

@@ -16,11 +16,11 @@
             </a>
 
             <div class="search-box">
-                <input type="text" placeholder="Cari...">
+                <input type="text" id="searchCategory" placeholder="Cari...">
             </div>
         </div>
 
-        <table class="table-custom">
+        <table class="table-custom" id="tableCategory">
             <thead>
                 <tr>
                     <th>No</th>
@@ -77,6 +77,27 @@ function openModal(id) {
 function closeModal() {
     document.getElementById("confirmModal").style.display = "none";
 }
+
+// SEARCH CATEGORY
+document.getElementById("searchCategory").addEventListener("keyup", function() {
+
+    let input = this.value.toLowerCase();
+    let rows = document.querySelectorAll("#tableCategory tbody tr");
+
+    rows.forEach(function(row){
+
+        let text = row.innerText.toLowerCase();
+
+        if(text.includes(input)){
+            row.style.display = "";
+        }else{
+            row.style.display = "none";
+        }
+
+    });
+
+});
+
 </script>
 
 <?= view('layout/footer') ?>

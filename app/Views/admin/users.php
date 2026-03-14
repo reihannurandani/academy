@@ -16,11 +16,11 @@
             </a>
 
             <div class="search-box">
-                <input type="text" placeholder="Cari...">
+                <input type="text" id="searchUser" placeholder="Cari...">
             </div>
         </div>
 
-        <table class="table-custom">
+        <table class="table-custom" id="tableUser">
             <thead>
                 <tr>
                     <th>No</th>
@@ -48,7 +48,6 @@
                     <td>
                         <a href="<?= base_url('admin/edit-user/'.$u['id']) ?>" class="btn-edit">edit</a>
 
-                        <!-- Tombol Hapus -->
                         <button class="btn-delete"
                                 onclick="openModal(<?= $u['id']; ?>)">
                             🗑
@@ -63,9 +62,6 @@
 
 </div>
 
-<!-- ========================= -->
-<!-- MODAL KONFIRMASI -->
-<!-- ========================= -->
 <div id="confirmModal" class="modal-overlay">
     <div class="modal-box">
         <h3>Yakin?</h3>
@@ -87,6 +83,26 @@ function openModal(id) {
 function closeModal() {
     document.getElementById("confirmModal").style.display = "none";
 }
+
+// SEARCH USER
+document.getElementById("searchUser").addEventListener("keyup", function() {
+
+    let input = this.value.toLowerCase();
+    let rows = document.querySelectorAll("#tableUser tbody tr");
+
+    rows.forEach(function(row){
+
+        let text = row.innerText.toLowerCase();
+
+        if(text.includes(input)){
+            row.style.display = "";
+        }else{
+            row.style.display = "none";
+        }
+
+    });
+
+});
 </script>
 
 <?= view('layout/footer') ?>

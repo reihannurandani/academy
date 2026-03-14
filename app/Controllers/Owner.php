@@ -36,14 +36,12 @@ class Owner extends BaseController
         $todayStart = date('Y-m-d 00:00:00');
         $todayEnd   = date('Y-m-d 23:59:59');
 
-        // TOTAL PENDAPATAN
         $totalPendapatan = $db->table('transactions')
             ->selectSum('total_harga')
             ->get()
             ->getRow()
             ->total_harga ?? 0;
 
-        // PENDAPATAN HARI INI
         $pendapatanHariIni = $db->table('transactions')
             ->selectSum('total_harga')
             ->where('created_at >=', $todayStart)
@@ -55,7 +53,6 @@ class Owner extends BaseController
         $totalUser  = $this->userModel->countAll();
         $totalSiswa = $this->studentModel->countAll();
 
-        // DATA SISWA + KURSUS + KATEGORI
         $students = $db->table('students')
             ->select("
                 students.id,
@@ -73,7 +70,7 @@ class Owner extends BaseController
             ->orderBy('students.id', 'DESC')
             ->get()
             ->getResultArray();
-            
+
         return view('owner/dashboard', [
             'totalPendapatan'   => $totalPendapatan,
             'pendapatanHariIni' => $pendapatanHariIni,
@@ -110,7 +107,6 @@ class Owner extends BaseController
         $month = date('m');
         $year  = date('Y');
 
-        // PENDAPATAN HARI INI
         $pendapatanHariIni = $db->table('transactions')
             ->selectSum('total_harga')
             ->where('created_at >=',$todayStart)
@@ -119,7 +115,6 @@ class Owner extends BaseController
             ->getRow()
             ->total_harga ?? 0;
 
-        // PENDAPATAN BULAN INI
         $pendapatanBulanIni = $db->table('transactions')
             ->selectSum('total_harga')
             ->where('MONTH(created_at)', $month)
@@ -128,18 +123,15 @@ class Owner extends BaseController
             ->getRow()
             ->total_harga ?? 0;
 
-        // TOTAL PENDAPATAN
         $totalPendapatan = $db->table('transactions')
             ->selectSum('total_harga')
             ->get()
             ->getRow()
             ->total_harga ?? 0;
 
-        // TOTAL TRANSAKSI
         $totalTransaksi = $db->table('transactions')
             ->countAllResults();
 
-        // DATA TRANSAKSI
         $transactions = $db->table('transactions')
             ->select('invoice,total_harga,created_at')
             ->orderBy('created_at','DESC')
@@ -162,6 +154,37 @@ class Owner extends BaseController
     {
         $db = \Config\Database::connect();
 
+        $todayStart = date('Y-m-d 00:00:00');
+        $todayEnd   = date('Y-m-d 23:59:59');
+
+        $month = date('m');
+        $year  = date('Y');
+
+        $pendapatanHariIni = $db->table('transactions')
+            ->selectSum('total_harga')
+            ->where('created_at >=',$todayStart)
+            ->where('created_at <=',$todayEnd)
+            ->get()
+            ->getRow()
+            ->total_harga ?? 0;
+
+        $pendapatanBulanIni = $db->table('transactions')
+            ->selectSum('total_harga')
+            ->where('MONTH(created_at)', $month)
+            ->where('YEAR(created_at)', $year)
+            ->get()
+            ->getRow()
+            ->total_harga ?? 0;
+
+        $totalPendapatan = $db->table('transactions')
+            ->selectSum('total_harga')
+            ->get()
+            ->getRow()
+            ->total_harga ?? 0;
+
+        $totalTransaksi = $db->table('transactions')
+            ->countAllResults();
+
         $transactions = $db->table('transactions')
             ->select('invoice,total_harga,created_at')
             ->orderBy('created_at','DESC')
@@ -169,7 +192,11 @@ class Owner extends BaseController
             ->getResultArray();
 
         $html = view('owner/laporan_pdf',[
-            'transactions'=>$transactions
+            'pendapatanHariIni'  => $pendapatanHariIni,
+            'pendapatanBulanIni' => $pendapatanBulanIni,
+            'totalPendapatan'    => $totalPendapatan,
+            'totalTransaksi'     => $totalTransaksi,
+            'transactions'       => $transactions
         ]);
 
         $dompdf = new \Dompdf\Dompdf();

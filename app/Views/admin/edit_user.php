@@ -4,66 +4,35 @@
 
 <div class="main">
 
-    <div class="page-header">
-        Kelola User
-    </div>
+    <h3>Edit User</h3>
 
-    <div class="form-section">
+    <div class="table-box" style="max-width:500px;">
+        <form method="post" action="<?= base_url('admin/update-user/'.$user['id']) ?>" class="form-user">
+            <label>Username</label>
+            <input name="username" value="<?= esc($user['username']) ?>" placeholder="Username" required>
 
-        <div class="form-label-badge">
-            edit
-        </div>
+            <label>Nama</label>
+            <input name="nama" value="<?= esc($user['nama']) ?>" placeholder="Nama" required>
 
-        <div class="form-card">
+            <label>Password Baru</label>
+            <input type="password" name="password" placeholder="Password baru (kosongkan jika tidak diganti)">
 
-            <form method="post" action="<?= base_url('admin/update-user/'.$user['id']) ?>">
+            <label>Role</label>
+            <select name="role">
+                <option value="admin" <?= $user['role']=='admin'?'selected':'' ?>>Admin</option>
+                <option value="kasir" <?= $user['role']=='kasir'?'selected':'' ?>>Kasir</option>
+                <option value="owner" <?= $user['role']=='owner'?'selected':'' ?>>Owner</option>
+            </select>
 
-                <input 
-                    name="username" 
-                    value="<?= esc($user['username']) ?>"
-                    class="form-input"
-                    placeholder="Username"
-                    required
-                >
+            <label>Status</label>
+            <select name="status">
+                <option value="aktif" <?= $user['status']=='aktif'?'selected':'' ?>>Aktif</option>
+                <option value="nonaktif" <?= $user['status']=='nonaktif'?'selected':'' ?>>Nonaktif</option>
+            </select>
 
-                <input 
-                    name="nama" 
-                    value="<?= esc($user['nama']) ?>"
-                    class="form-input"
-                    placeholder="Nama"
-                    required
-                >
-
-                <input 
-                    type="password"
-                    name="password"
-                    class="form-input"
-                    placeholder="Password baru (kosongkan jika tidak diganti)"
-                >
-
-                <select name="role" class="form-input">
-                    <option value="admin" <?= $user['role']=='admin'?'selected':'' ?>>Admin</option>
-                    <option value="kasir" <?= $user['role']=='kasir'?'selected':'' ?>>Kasir</option>
-                    <option value="owner" <?= $user['role']=='owner'?'selected':'' ?>>Owner</option>
-                </select>
-
-                <select name="status" class="form-input">
-                    <option value="aktif" <?= $user['status']=='aktif'?'selected':'' ?>>Aktif</option>
-                    <option value="nonaktif" <?= $user['status']=='nonaktif'?'selected':'' ?>>Nonaktif</option>
-                </select>
-
-                <button type="submit" class="btn-update">
-                    Update
-                </button>
-
-            </form>
-
-        </div>
-
-        <a href="<?= base_url('admin/users') ?>" class="btn-back">
-            kembali
-        </a>
-
+            <button class="tambah">Update</button>
+            <a href="<?= base_url('admin/users') ?>" class="kembali">← Kembali</a>
+        </form>
     </div>
 
 </div>
