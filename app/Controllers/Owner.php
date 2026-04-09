@@ -97,129 +97,208 @@ class Owner extends BaseController
     // =============================
     // LAPORAN
     // =============================
-    public function laporan()
-    {
-        $db = \Config\Database::connect();
+ public function laporan()
+{
+    $mapel = $this->request->getGet('mapel'); // array
 
-        $todayStart = date('Y-m-d 00:00:00');
-        $todayEnd   = date('Y-m-d 23:59:59');
+    // ✅ ambil semua mapel
+    $data['mapelList'] = $this->productModel->findAll();
 
-        $month = date('m');
-        $year  = date('Y');
+    $builder = $this->transactionModel
+        ->select('transactions.*, students.nama_siswa, GROUP_CONCAT(products.nama_produk SEPARATOR ", ") as kursus')
+        ->join('students', 'students.id = transactions.id_siswa')
+        ->join('transaction_details', 'transaction_details.id_transaksi = transactions.id')
+        ->join('products', 'products.id = transaction_details.id_produk')
+        ->groupBy('transactions.id');
 
-        $pendapatanHariIni = $db->table('transactions')
-            ->selectSum('total_harga')
-            ->where('created_at >=',$todayStart)
-            ->where('created_at <=',$todayEnd)
-            ->get()
-            ->getRow()
-            ->total_harga ?? 0;
-
-        $pendapatanBulanIni = $db->table('transactions')
-            ->selectSum('total_harga')
-            ->where('MONTH(created_at)', $month)
-            ->where('YEAR(created_at)', $year)
-            ->get()
-            ->getRow()
-            ->total_harga ?? 0;
-
-        $totalPendapatan = $db->table('transactions')
-            ->selectSum('total_harga')
-            ->get()
-            ->getRow()
-            ->total_harga ?? 0;
-
-        $totalTransaksi = $db->table('transactions')
-            ->countAllResults();
-
-        $transactions = $db->table('transactions')
-            ->select('invoice,total_harga,created_at')
-            ->orderBy('created_at','DESC')
-            ->get()
-            ->getResultArray();
-
-        return view('owner/laporan',[
-            'pendapatanHariIni'  => $pendapatanHariIni,
-            'pendapatanBulanIni' => $pendapatanBulanIni,
-            'totalPendapatan'    => $totalPendapatan,
-            'totalTransaksi'     => $totalTransaksi,
-            'transactions'       => $transactions
-        ]);
+    // ✅ MULTI FILTER
+    if(!empty($mapel)){
+        $builder->whereIn('products.id', $mapel);
     }
+
+    $data['transactions'] = $builder->findAll();
+
+    // ================= CARD =================
+    $data['totalTransaksi']  = count($data['transactions']);
+    $data['totalPendapatan'] = array_sum(array_column($data['transactions'], 'total_harga'));
+
+    $today = date('Y-m-d');
+
+    $data['pendapatanHariIni'] = $this->transactionModel
+        ->where('DATE(created_at)', $today)
+        ->selectSum('total_harga')
+        ->first()['total_harga'] ?? 0;
+
+    $data['pendapatanBulanIni'] = $this->transactionModel
+        ->where('MONTH(created_at)', date('m'))
+        ->where('YEAR(created_at)', date('Y'))
+        ->selectSum('total_harga')
+        ->first()['total_harga'] ?? 0;
+
+    return view('owner/laporan', $data);
+}
+
+            // =============================
+        // DETAIL TRANSAKSI (OWNER)
+        // =============================
+        public function detail($id)
+        {
+            $db = \Config\Database::connect();
+
+            $transaksi = $db->table('transactions')
+                ->select('transactions.*, students.nama_siswa')
+                ->join('students', 'students.id = transactions.id_siswa')
+                ->where('transactions.id', $id)
+                ->get()
+                ->getRowArray();
+
+            if (!$transaksi) {
+                return redirect()->back()->with('error','Transaksi tidak ditemukan');
+            }
+
+            $detail = $db->table('transaction_details')
+                ->select('transaction_details.*, products.nama_produk')
+                ->join('products', 'products.id = transaction_details.id_produk')
+                ->where('id_transaksi', $id)
+                ->get()
+                ->getResultArray();
+
+            return view('owner/detail_transaksi', [
+                'transaksi' => $transaksi,
+                'detail'    => $detail
+            ]);
+        }
 
     // =============================
     // CETAK PDF
     // =============================
-    public function cetakPdf()
-    {
-        $db = \Config\Database::connect();
+   public function cetakPdf()
+{
+    $db = \Config\Database::connect();
 
-        $todayStart = date('Y-m-d 00:00:00');
-        $todayEnd   = date('Y-m-d 23:59:59');
+    $transactions = $db->table('transactions')
+        ->select("
+            transactions.*,
+            transactions.tanggal_mulai,
+            transactions.tanggal_selesai,
+            students.nama_siswa,
+            GROUP_CONCAT(products.nama_produk SEPARATOR ', ') as kursus
+        ")
+        ->join('students', 'students.id = transactions.id_siswa', 'left')
+        ->join('transaction_details', 'transaction_details.id_transaksi = transactions.id', 'left')
+        ->join('products', 'products.id = transaction_details.id_produk', 'left')
+        ->groupBy('transactions.id')
+        ->orderBy('transactions.id', 'DESC')
+        ->get()
+        ->getResultArray();
 
-        $month = date('m');
-        $year  = date('Y');
+    $totalTransaksi = count($transactions);
 
-        $pendapatanHariIni = $db->table('transactions')
-            ->selectSum('total_harga')
-            ->where('created_at >=',$todayStart)
-            ->where('created_at <=',$todayEnd)
-            ->get()
-            ->getRow()
-            ->total_harga ?? 0;
-
-        $pendapatanBulanIni = $db->table('transactions')
-            ->selectSum('total_harga')
-            ->where('MONTH(created_at)', $month)
-            ->where('YEAR(created_at)', $year)
-            ->get()
-            ->getRow()
-            ->total_harga ?? 0;
-
-        $totalPendapatan = $db->table('transactions')
-            ->selectSum('total_harga')
-            ->get()
-            ->getRow()
-            ->total_harga ?? 0;
-
-        $totalTransaksi = $db->table('transactions')
-            ->countAllResults();
-
-        $transactions = $db->table('transactions')
-            ->select('invoice,total_harga,created_at')
-            ->orderBy('created_at','DESC')
-            ->get()
-            ->getResultArray();
-
-        $html = view('owner/laporan_pdf',[
-            'pendapatanHariIni'  => $pendapatanHariIni,
-            'pendapatanBulanIni' => $pendapatanBulanIni,
-            'totalPendapatan'    => $totalPendapatan,
-            'totalTransaksi'     => $totalTransaksi,
-            'transactions'       => $transactions
-        ]);
-
-        $dompdf = new \Dompdf\Dompdf();
-        $dompdf->loadHtml($html);
-        $dompdf->setPaper('A4','portrait');
-        $dompdf->render();
-
-        return $this->response
-            ->setHeader('Content-Type','application/pdf')
-            ->setHeader('Content-Disposition','attachment; filename="laporan-keuangan.pdf"')
-            ->setBody($dompdf->output());
+    $totalPendapatan = 0;
+    foreach($transactions as $t){
+        $totalPendapatan += $t['total_harga'];
     }
+
+    $pendapatanHariIni = $db->table('transactions')
+        ->selectSum('total_harga')
+        ->where('DATE(created_at)', date('Y-m-d'))
+        ->get()->getRow()->total_harga ?? 0;
+
+    $pendapatanBulanIni = $db->table('transactions')
+        ->selectSum('total_harga')
+        ->where('MONTH(created_at)', date('m'))
+        ->get()->getRow()->total_harga ?? 0;
+
+    $data = [
+        'transactions'       => $transactions,
+        'totalTransaksi'     => $totalTransaksi,
+        'totalPendapatan'    => $totalPendapatan,
+        'pendapatanHariIni'  => $pendapatanHariIni,
+        'pendapatanBulanIni' => $pendapatanBulanIni,
+    ];
+
+    $html = view('owner/laporan_pdf', $data);
+
+    $dompdf = new \Dompdf\Dompdf();
+    $dompdf->loadHtml($html);
+    $dompdf->setPaper('A4', 'landscape'); // biar muat banyak kolom
+    $dompdf->render();
+    $dompdf->stream("laporan.pdf", ["Attachment" => false]);
+}
 
     // =============================
     // LOG ACTIVITY
     // =============================
-    public function logActivity()
-    {
-        $data['logs'] = $this->logModel
-            ->select('log_activity.*, users.nama')
-            ->join('users','users.id = log_activity.id_user')
-            ->findAll();
+public function logActivity()
+{
+    $start  = $this->request->getGet('start');
+    $end    = $this->request->getGet('end');
+    $search = $this->request->getGet('search');
 
-        return view('owner/log',$data);
+    $builder = $this->logModel
+        ->select('log_activity.*, users.nama, users.role')
+        ->join('users','users.id = log_activity.id_user');
+
+    if(!empty($start)){
+        $builder->where('DATE(log_activity.created_at) >=', $start);
     }
+
+    if(!empty($end)){
+        $builder->where('DATE(log_activity.created_at) <=', $end);
+    }
+
+    if(!empty($search)){
+        $builder->groupStart()
+            ->like('users.nama', $search)
+            ->orLike('log_activity.activity', $search)
+        ->groupEnd();
+    }
+
+    $data['logs'] = $builder
+        ->orderBy('log_activity.created_at','DESC')
+        ->findAll();
+
+    return view('owner/log',$data);
+}
+
+public function struk($id)
+{
+    $db = \Config\Database::connect();
+
+    $transaksi = $db->table('transactions')
+        ->select('transactions.*, students.nama_siswa')
+        ->join('students', 'students.id = transactions.id_siswa')
+        ->where('transactions.id', $id)
+        ->get()
+        ->getRowArray();
+
+    if (!$transaksi) {
+        throw \CodeIgniter\Exceptions\PageNotFoundException::forPageNotFound();
+    }
+
+    $detail = $db->table('transaction_details')
+        ->select('transaction_details.*, products.nama_produk')
+        ->join('products', 'products.id = transaction_details.id_produk')
+        ->where('id_transaksi', $id)
+        ->get()
+        ->getResultArray();
+
+    // LOAD VIEW PDF
+    $html = view('owner/struk_pdf', [
+        'transaksi' => $transaksi,
+        'detail'    => $detail
+    ]);
+
+    // DOMPDF
+    $dompdf = new \Dompdf\Dompdf();
+    $dompdf->loadHtml($html);
+    $dompdf->setPaper([0,0,226,600], 'portrait');
+    $dompdf->render();
+
+    // DOWNLOAD
+    return $this->response
+        ->setHeader('Content-Type', 'application/pdf')
+        ->setHeader('Content-Disposition', 'attachment; filename="struk-'.$transaksi['invoice'].'.pdf"')
+        ->setBody($dompdf->output());
+}
 }

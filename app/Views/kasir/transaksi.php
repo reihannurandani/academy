@@ -5,243 +5,283 @@
 
 <div class="main">
 
-<div class="dashboard-header">
-<h2>Transaksi</h2>
-</div>
+    <div class="dashboard-header">
+        <h2>Transaksi</h2>
+    </div>
 
-<div class="transaksi-card">
+    <div class="transaksi-card">
 
-<?php if(session()->getFlashdata('error')): ?>
-<div class="custom-alert">
-<span><?= session()->getFlashdata('error') ?></span>
-<button onclick="this.parentElement.style.display='none'">×</button>
-</div>
-<?php endif; ?>
+        <!-- ================= ALERT ================= -->
+        <?php if(session()->getFlashdata('error')): ?>
+            <div id="alertBox" class="custom-alert error">
+                <span><?= session()->getFlashdata('error') ?></span>
+            </div>
+        <?php endif; ?>
 
-<form action="<?= base_url('kasir/save-transaksi') ?>" method="post">
+        <?php if(session()->getFlashdata('success')): ?>
+            <div id="alertBox" class="custom-alert success">
+                <div>
+                    <?= session()->getFlashdata('success') ?>
+                </div>
 
-<!-- ===================== -->
-<!-- DATA SISWA -->
-<!-- ===================== -->
-
-<h5 class="section-title">Data Siswa</h5>
-
-<input name="nama_siswa" class="custom-input" placeholder="Nama Siswa" required>
-
-<input name="no_hp" class="custom-input" placeholder="No. HP" required>
-
-<textarea name="alamat" class="custom-input" placeholder="Alamat"></textarea>
-
-
-<!-- ===================== -->
-<!-- TANGGAL KURSUS -->
-<!-- ===================== -->
-
-<h5 class="section-title mt-20">Tanggal Kursus</h5>
-
-<input
-type="date"
-name="tanggal_mulai"
-id="tanggal_mulai"
-class="custom-input"
-required>
-
-<input
-type="text"
-id="tanggal_selesai_preview"
-class="custom-input"
-placeholder="Tanggal Selesai"
-readonly>
+                <div class="alert-actions">
+                    <a href="<?= base_url('kasir/cetakStruk/'.session()->getFlashdata('id_transaksi')) ?>" target="_blank">
+                        <button class="btn-cetak">🧾 Cetak Struk</button>
+                    </a>
+                </div>
+            </div>
+        <?php endif; ?>
 
 
-<!-- ===================== -->
-<!-- PILIH BAHASA -->
-<!-- ===================== -->
+        <form action="<?= base_url('kasir/save-transaksi') ?>" method="post">
 
-<h5 class="section-title mt-20">Pilih Bahasa</h5>
+            <!-- ================= DATA SISWA ================= -->
+            <h5 class="section-title">Data Siswa</h5>
 
-<div class="produk-container">
-
-<?php foreach($products as $p): ?>
-
-<label class="produk-card <?= ($p['kuota'] <= 0) ? 'disabled-card' : '' ?>">
-
-<input
-type="checkbox"
-name="id_produk[]"
-value="<?= $p['id'] ?>"
-data-harga="<?= $p['harga_produk'] ?>"
-class="pilihProduk"
-<?= ($p['kuota'] <= 0) ? 'disabled' : '' ?>
-hidden
->
-
-<div class="produk-inner">
-
-<div class="produk-icon">
-🌍
-</div>
-
-<h6><?= esc($p['nama_produk']) ?></h6>
-
-<div class="produk-detail">
-
-<div>
-<span>Waktu</span>
-<small><?= esc($p['jam_kursus']) ?></small>
-</div>
-
-<div>
-<span>Kuota</span>
-<small><?= esc($p['kuota']) ?></small>
-</div>
-
-<div>
-<span>Harga</span>
-<small>
-Rp <?= number_format($p['harga_produk'],0,',','.') ?> / bulan
-</small>
-</div>
-
-<div>
-<span>Status</span>
-
-<?php if($p['kuota'] > 0): ?>
-<span class="badge-ready">Ready</span>
-<?php else: ?>
-<span class="badge-full">Full</span>
-<?php endif; ?>
-
-</div>
-
-</div>
-
-<div class="btn-pilih">Pilih</div>
-
-</div>
-
-</label>
-
-<?php endforeach; ?>
-
-</div>
+            <input name="nama_siswa" class="custom-input" placeholder="Nama Siswa" required>
+            <input name="no_hp" class="custom-input" placeholder="No. HP" required>
+            <textarea name="alamat" class="custom-input" placeholder="Alamat"></textarea>
 
 
-<!-- ===================== -->
-<!-- DURASI -->
-<!-- ===================== -->
+            <!-- ================= TANGGAL ================= -->
+            <h5 class="section-title mt-20">Tanggal Kursus</h5>
 
-<h5 class="section-title mt-20">Durasi (perbulan)</h5>
+            <input type="date" name="tanggal_mulai" id="tanggal_mulai" class="custom-input" required>
 
-<input
-type="number"
-id="durasi"
-name="durasi"
-class="custom-input mt-20"
-placeholder="Masukan durasi bulan"
-min="1"
-required>
+            <input type="text" id="tanggal_selesai_preview" class="custom-input"
+                placeholder="Tanggal Selesai" readonly>
 
 
-<!-- ===================== -->
-<!-- TOTAL -->
-<!-- ===================== -->
+            <!-- ================= KATEGORI ================= -->
+            <h5 class="section-title mt-20">Pilih Kategori</h5>
 
-<input
-id="total"
-type="text"
-class="custom-input"
-placeholder="Total Harga"
-readonly>
+            <select id="kategori" class="custom-input">
+                <option value="">-- Pilih Kategori --</option>
+                <?php foreach($categories as $c): ?>
+                    <option value="<?= $c['id'] ?>"
+                        data-deskripsi="<?= esc($c['deskripsi']) ?>">
+                        <?= esc($c['nama_kategori']) ?>
+                    </option>
+                <?php endforeach; ?>
+            </select>
 
-
-<!-- ===================== -->
-<!-- PEMBAYARAN -->
-<!-- ===================== -->
-
-<input
-name="uang_bayar"
-id="uang_bayar"
-type="number"
-class="custom-input"
-placeholder="Uang Bayar"
-required>
+            <!-- 🔥 DESKRIPSI KATEGORI -->
+            <div id="kategoriDeskripsi" class="kategori-box" style="display:none;"></div>
 
 
-<input
-id="kembalian"
-type="text"
-class="custom-input"
-placeholder="Uang Kembalian"
-readonly>
+            <!-- ================= MAPEL ================= -->
+            <h5 class="section-title mt-20">Pilih Mapel</h5>
+
+            <div class="produk-container" id="produkContainer">
+                <p style="text-align:center; color:#888;">Pilih kategori dulu</p>
+            </div>
 
 
-<div class="btn-area">
-<button type="submit" class="btn-daftar">
-Daftar & Cetak Struk
-</button>
-</div>
+            <!-- ================= DURASI ================= -->
+            <h5 class="section-title mt-20">Durasi (bulan)</h5>
 
-</form>
+            <input type="number" id="durasi" name="durasi"
+                class="custom-input" placeholder="Masukan durasi" min="1" required>
 
-</div>
+
+            <!-- ================= TOTAL ================= -->
+            <input id="total" type="text" class="custom-input"
+                placeholder="Total Harga" readonly>
+
+
+            <!-- ================= PEMBAYARAN ================= -->
+            <input name="uang_bayar" id="uang_bayar" type="number"
+                class="custom-input" placeholder="Uang Bayar" required>
+
+            <input id="kembalian" type="text"
+                class="custom-input" placeholder="Kembalian" readonly>
+
+
+            <!-- ================= BUTTON ================= -->
+            <div class="btn-area">
+                <button type="submit" class="btn-daftar">
+                    Simpan Transaksi
+                </button>
+            </div>
+
+        </form>
+
+    </div>
 </div>
 
 
 <script>
+// ================= DESKRIPSI KATEGORI =================
+document.getElementById('kategori').addEventListener('change', function(){
 
+    let selected = this.options[this.selectedIndex];
+    let deskripsi = selected.getAttribute('data-deskripsi');
+    let box = document.getElementById('kategoriDeskripsi');
+
+    if(deskripsi){
+        box.style.display = 'block';
+        box.innerHTML = `
+            <div class="kategori-card">
+                <div class="kategori-icon">📚</div>
+                <h6>${selected.text}</h6>
+                <p>${deskripsi}</p>
+            </div>
+        `;
+    } else {
+        box.style.display = 'none';
+    }
+});
+
+
+// ================= FORMAT RUPIAH =================
 function rupiah(angka){
-return angka.toLocaleString('id-ID');
+    return angka.toLocaleString('id-ID');
 }
 
+// ================= HITUNG TOTAL =================
 function hitungTotal(){
 
-let durasi = parseInt(document.getElementById('durasi').value) || 0;
-let total = 0;
+    let durasi = parseInt(document.getElementById('durasi').value) || 0;
+    let total = 0;
 
-document.querySelectorAll('.pilihProduk:checked').forEach(item=>{
-total += parseInt(item.dataset.harga) * durasi;
-});
+    document.querySelectorAll('.pilihProduk:checked').forEach(item=>{
+        total += parseInt(item.dataset.harga) * durasi;
+    });
 
-document.getElementById('total').value =
-total > 0 ? 'Rp ' + rupiah(total) : '';
+    document.getElementById('total').value =
+        total > 0 ? 'Rp ' + rupiah(total) : '';
 
-let bayar = parseInt(document.getElementById('uang_bayar').value) || 0;
-let kembali = bayar - total;
+    let bayar = parseInt(document.getElementById('uang_bayar').value) || 0;
+    let kembali = bayar - total;
 
-document.getElementById('kembalian').value =
-kembali >= 0 ? 'Rp ' + rupiah(kembali) : '';
+    document.getElementById('kembalian').value =
+        kembali >= 0 ? 'Rp ' + rupiah(kembali) : '';
 
-hitungTanggalSelesai();
-
+    hitungTanggalSelesai();
 }
 
+// ================= HITUNG TANGGAL =================
 function hitungTanggalSelesai(){
 
-let mulai = document.getElementById('tanggal_mulai').value;
-let durasi = parseInt(document.getElementById('durasi').value) || 0;
+    let mulai = document.getElementById('tanggal_mulai').value;
+    let durasi = parseInt(document.getElementById('durasi').value) || 0;
 
-if(mulai && durasi){
-
-let t = new Date(mulai);
-t.setMonth(t.getMonth() + durasi);
-
-let selesai = t.toISOString().split('T')[0];
-
-document.getElementById('tanggal_selesai_preview').value = selesai;
-
+    if(mulai && durasi){
+        let t = new Date(mulai);
+        t.setMonth(t.getMonth() + durasi);
+        let selesai = t.toISOString().split('T')[0];
+        document.getElementById('tanggal_selesai_preview').value = selesai;
+    }
 }
 
-}
+// ================= LOAD PRODUK =================
+document.getElementById('kategori').addEventListener('change', function(){
 
-document.querySelectorAll('.pilihProduk').forEach(item=>{
-item.addEventListener('change', hitungTotal);
+    let id = this.value;
+    let container = document.getElementById('produkContainer');
+
+    if(!id){
+        container.innerHTML = "<p style='text-align:center;'>Pilih kategori dulu</p>";
+        return;
+    }
+
+    container.innerHTML = "Loading...";
+
+    fetch("<?= base_url('kasir/get-produk') ?>", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/x-www-form-urlencoded"
+        },
+        body: "id_kategori=" + id
+    })
+    .then(res => res.json())
+    .then(data => {
+
+        if(data.length === 0){
+            container.innerHTML = "<p style='text-align:center;'>Tidak ada mapel</p>";
+            return;
+        }
+
+        let html = "";
+
+        data.forEach(p => {
+
+            let status = p.kuota > 0 ? 'Tersedia' : 'Penuh';
+            let statusClass = p.kuota > 0 ? 'badge-ready' : 'badge-full';
+            let disabled = p.kuota > 0 ? '' : 'disabled';
+
+            html += `
+            <label class="produk-card ${disabled ? 'disabled' : ''}">
+
+                <input type="checkbox"
+                    name="id_produk[]"
+                    value="${p.id}"
+                    data-harga="${p.harga_produk}"
+                    class="pilihProduk"
+                    ${disabled}
+                    hidden>
+
+                <div class="produk-inner">
+
+                    <div class="produk-header">
+                        <div class="produk-icon">📘</div>
+                        <div>
+                            <h6>${p.nama_produk}</h6>
+                            <small>${p.jam_kursus}</small>
+                        </div>
+                    </div>
+
+                    <div class="produk-detail-modern">
+
+                        <div class="row">
+                            <span>Kuota</span>
+                            <strong>${p.kuota}</strong>
+                        </div>
+
+                        <div class="row">
+                            <span>Harga</span>
+                            <strong>Rp ${rupiah(parseInt(p.harga_produk))}</strong>
+                        </div>
+
+                        <div class="row">
+                            <span>Status</span>
+                            <span class="${statusClass}">${status}</span>
+                        </div>
+
+                    </div>
+
+                    <div class="btn-pilih-modern">
+                        ${p.kuota > 0 ? 'Pilih' : 'Penuh'}
+                    </div>
+
+                </div>
+            </label>
+            `;
+        });
+
+        container.innerHTML = html;
+
+        // aktifkan event
+        document.querySelectorAll('.pilihProduk').forEach(item=>{
+            item.addEventListener('change', hitungTotal);
+        });
+
+    });
 });
 
+// ================= EVENT =================
 document.getElementById('durasi').addEventListener('input', hitungTotal);
 document.getElementById('uang_bayar').addEventListener('input', hitungTotal);
 document.getElementById('tanggal_mulai').addEventListener('change', hitungTotal);
 
+// ================= AUTO CLOSE ALERT =================
+setTimeout(() => {
+    let alert = document.getElementById('alertBox');
+    if(alert){
+        alert.style.opacity = '0';
+        setTimeout(()=> alert.remove(), 500);
+    }
+}, 4000);
 </script>
 
 <?= view('layout/footer') ?>

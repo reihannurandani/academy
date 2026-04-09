@@ -7,14 +7,14 @@
 <div class="main-wrapper">
 
     <div class="top-header">
-        <h2>Dasboard</h2>
+        <h2>Dashboard</h2>
     </div>
 
     <div class="dashboard-box">
 
         <div class="welcome-text">
-            <h3>Haii Admin!</h3>
-            <p>Selamat Datang Di Dashboard Admin</p>
+            <h3>Haii Admin! 👋</h3>
+            <p>Selamat Datang di Dashboard Admin</p>
             <hr>
         </div>
 
@@ -22,14 +22,11 @@
 
             <!-- USER -->
             <div class="stat-card">
-
-                <div class="stat-left">
-                    <div class="icon-box">
-                        <i class='bx bx-group'></i>
-                    </div>
+                <div class="icon-box blue">
+                    <i class='bx bx-group'></i>
                 </div>
 
-                <div class="stat-right">
+                <div>
                     <div class="stat-number">
                         <?= $totalUsers ?? 0 ?>
                     </div>
@@ -37,39 +34,31 @@
                         Total User
                     </div>
                 </div>
-
             </div>
 
             <!-- KATEGORI -->
             <div class="stat-card">
-
-                <div class="stat-left">
-                    <div class="icon-box">
-                        <i class='bx bx-book'></i>
-                    </div>
+                <div class="icon-box orange">
+                    <i class='bx bx-book'></i>
                 </div>
 
-                <div class="stat-right">
+                <div>
                     <div class="stat-number">
                         <?= $totalKategori ?? 0 ?>
                     </div>
                     <div class="stat-label">
-                        Total Bategori
+                        Total Kategori
                     </div>
                 </div>
-
             </div>
 
             <!-- BAHASA -->
             <div class="stat-card">
-
-                <div class="stat-left">
-                    <div class="icon-box">
-                        <i class='bx bx-globe'></i>
-                    </div>
+                <div class="icon-box green">
+                    <i class='bx bx-globe'></i>
                 </div>
 
-                <div class="stat-right">
+                <div>
                     <div class="stat-number">
                         <?= $totalBahasa ?? 0 ?>
                     </div>
@@ -77,27 +66,22 @@
                         Total Bahasa
                     </div>
                 </div>
-
             </div>
 
             <!-- SISWA -->
             <div class="stat-card">
-
-                <div class="stat-left">
-                    <div class="icon-box">
-                        <i class='bx bx-child'></i>
-                    </div>
+                <div class="icon-box pink">
+                    <i class='bx bx-child'></i>
                 </div>
 
-                <div class="stat-right">
+                <div>
                     <div class="stat-number">
                         <?= $totalSiswa ?? 0 ?>
                     </div>
                     <div class="stat-label">
-                        Total siswa
+                        Total Siswa
                     </div>
                 </div>
-
             </div>
 
         </div>

@@ -64,11 +64,20 @@ $routes->group('kasir', ['filter'=>['auth','role:kasir']], function($routes){
     // TRANSAKSI
     $routes->get('transaksi','Kasir::transaksi');
     $routes->post('save-transaksi','Kasir::saveTransaksi');
+    $routes->post('get-produk', 'Kasir::getProdukByKategori');
+    $routes->get('riwayat','Kasir::riwayat');
+    $routes->get('detail/(:num)','Kasir::detail/$1');
+
+    // PERPANJANGAN
+    $routes->get('perpanjang','Kasir::perpanjang');
+    $routes->get('perpanjang/(:num)','Kasir::perpanjangForm/$1');
+    $routes->post('perpanjang/simpan', 'Kasir::simpanPerpanjang'); 
 
     // STRUK
     $routes->get('struk/(:num)', 'Kasir::struk/$1');
+    $routes->get('cetakStruk/(:num)', 'Kasir::cetakStruk/$1');
 
-}); 
+});
 
 
 /*
@@ -84,10 +93,15 @@ $routes->group('owner', ['filter' => ['auth', 'role:owner']], function($routes){
     // LAPORAN
     $routes->get('laporan', 'Owner::laporan');
     $routes->get('cetak-pdf', 'Owner::cetakPdf');
+    $routes->get('struk/(:num)', 'Owner::struk/$1');
+
+    // DETAIL TRANSAKSI (FIX)
+    $routes->get('detail/(:num)', 'Owner::detail/$1');
 
     // LOG ACTIVITY
     $routes->get('logs', 'Owner::logActivity');
 
     // UPDATE STATUS
     $routes->post('update-status/(:num)', 'Owner::updateStatus/$1');
+
 });

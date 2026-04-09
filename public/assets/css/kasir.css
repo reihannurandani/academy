@@ -1,357 +1,755 @@
+/* ======================
+   GLOBAL
+====================== */
 *{
-margin:0;
-padding:0;
-box-sizing:border-box;
-font-family:'Poppins',sans-serif;
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:'Poppins',sans-serif;
 }
 
-/* BACKGROUND */
 body{
-background:linear-gradient(135deg,#2f6fcc,#4e73df);
+    background:linear-gradient(135deg,#3b82f6,#6366f1);
 }
 
 /* ======================
-   MAIN (FIX SIDEBAR)
+   MAIN LAYOUT
 ====================== */
 .main{
-margin-left:240px;
-padding:30px;
-min-height:100vh;
+    margin-left:240px;
+    padding:30px;
+    min-height:100vh;
 }
 
 /* ======================
    HEADER
 ====================== */
 .dashboard-header{
-background:#cbd5e1;
-padding:20px 30px;
-border-radius:20px;
-margin-bottom:25px;
-box-shadow:0 6px 20px rgba(0,0,0,0.08);
+    background:#e2e8f0;
+    padding:18px 25px;
+    border-radius:16px;
+    margin-bottom:25px;
+    box-shadow:0 4px 15px rgba(0,0,0,0.08);
 }
 
 .dashboard-header h2{
-margin:0;
-font-weight:600;
-color:#1e293b;
+    color:#1e293b;
+    font-weight:600;
 }
 
 /* ======================
-   CARD CONTAINER
+   CARD UTAMA
 ====================== */
 .dashboard-card,
 .transaksi-card{
-background:linear-gradient(180deg,#7ea3d1,#6d94c5);
-padding:30px;
-border-radius:20px;
-color:white;
-box-shadow:0 10px 30px rgba(0,0,0,0.15);
+    background:linear-gradient(180deg,#6fa0dc,#5b8bd1);
+    padding:25px;
+    border-radius:18px;
+    color:white;
+    box-shadow:0 12px 30px rgba(0,0,0,0.2);
 }
 
 /* ======================
-   WELCOME BOX
+   SECTION BOX
 ====================== */
-.welcome-box h3{
-margin-bottom:5px;
+.section-box{
+    margin-top:20px;
 }
 
-.welcome-box p{
-margin-bottom:10px;
-}
-
-.welcome-box hr{
-border:none;
-height:1px;
-background:rgba(255,255,255,0.5);
-margin:10px 0 20px;
+.section-box h4{
+    margin-bottom:10px;
+    font-weight:500;
 }
 
 /* ======================
-   SECTION
-====================== */
-.section-box h4,
-.section-title{
-margin-bottom:15px;
-font-weight:600;
-}
-
-.mt-30{
-margin-top:30px;
-}
-
-/* ======================
-   TABLE STYLE
+   TABLE MODERN
 ====================== */
 .custom-table{
-background:#3c78c2;
-border-radius:15px;
-padding:15px;
-overflow-x:auto;
+    background:rgba(255,255,255,0.15);
+    border-radius:16px;
+    padding:15px;
+    overflow-x:auto;
 }
 
 .custom-table table{
-width:100%;
-border-collapse:collapse;
-color:white;
+    width:100%;
+    border-collapse:collapse;
+    color:white;
 }
 
 .custom-table thead{
-background:#4f8bd6;
+    background:rgba(0,0,0,0.2);
 }
 
 .custom-table th{
-padding:12px;
-text-align:left;
-font-weight:600;
+    padding:12px;
+    text-align:left;
+    font-size:13px;
 }
 
 .custom-table td{
-padding:12px;
-background:#3c78c2;
+    padding:12px;
+    font-size:13px;
 }
 
 .custom-table tbody tr{
-border-top:1px solid rgba(255,255,255,0.2);
+    border-top:1px solid rgba(255,255,255,0.2);
 }
 
 /* ======================
    STATUS BADGE
 ====================== */
 .status-badge{
-background:#4ade80;
-color:#064e3b;
-padding:5px 12px;
-border-radius:20px;
-font-size:12px;
-font-weight:600;
+    background:#22c55e;
+    padding:5px 10px;
+    border-radius:20px;
+    font-size:11px;
 }
 
 /* ======================
-   FORM INPUT
+   INPUT
 ====================== */
 .custom-input{
-width:100%;
-padding:12px 15px;
-border-radius:10px;
-border:none;
-margin-bottom:15px;
-font-size:14px;
+    width:100%;
+    padding:12px 14px;
+    border-radius:10px;
+    border:none;
+    margin-bottom:12px;
+    font-size:14px;
 }
 
 .custom-input:focus{
-outline:none;
+    outline:none;
 }
 
 /* ======================
-   PRODUK CARD
+   PRODUK CARD (TRANSKSI)
 ====================== */
 .produk-container{
-display:flex;
-gap:25px;
-flex-wrap:wrap;
-margin-top:10px;
+    display:flex;
+    gap:15px;
+    flex-wrap:wrap;
 }
 
 .produk-card{
-width:220px;
-border-radius:20px;
-cursor:pointer;
-transition:.3s;
-}
-
-.produk-card input{
-display:none;
+    width:220px;
+    cursor:pointer;
 }
 
 .produk-inner{
-background:#2f6fdd;
-border-radius:20px;
-overflow:hidden;
-}
-
-.flag-img{
-width:100%;
-height:130px;
-object-fit:cover;
-background:white;
-}
-
-.produk-bottom{
-padding:15px;
-text-align:center;
-color:white;
-}
-
-.produk-bottom h6{
-margin:0;
-font-weight:600;
-}
-
-.produk-bottom small{
-font-size:13px;
-}
-
-.produk-card:hover{
-transform:translateY(-5px);
+    background:white;
+    border-radius:16px;
+    padding:18px;
+    color:#1e293b;
+    box-shadow:0 6px 18px rgba(0,0,0,0.1);
+    transition:.3s;
+    border:2px solid transparent;
 }
 
 .produk-card input:checked + .produk-inner{
-box-shadow:0 0 0 3px white inset;
+    border:2px solid #3b82f6;
+    transform:scale(1.02);
+}
+
+.produk-inner:hover{
+    transform:translateY(-5px);
+}
+
+/* ======================
+   BADGE
+====================== */
+.badge-ready{
+    background:#dbeafe;
+    color:#2563eb;
+    padding:3px 10px;
+    border-radius:12px;
+    font-size:11px;
+}
+
+.badge-full{
+    background:#fee2e2;
+    color:#dc2626;
+    padding:3px 10px;
+    border-radius:12px;
+    font-size:11px;
 }
 
 /* ======================
    BUTTON
 ====================== */
 .btn-area{
-text-align:right;
-margin-top:20px;
+    text-align:right;
+    margin-top:20px;
 }
 
 .btn-daftar{
-background:#3b82f6;
-color:white;
-padding:12px 25px;
-border:none;
-border-radius:10px;
-font-weight:500;
-cursor:pointer;
-transition:.3s;
+    background:#2563eb;
+    color:white;
+    padding:12px 25px;
+    border:none;
+    border-radius:10px;
+    cursor:pointer;
+    font-weight:500;
 }
 
 .btn-daftar:hover{
-background:#2563eb;
+    background:#1d4ed8;
+}
+
+/* ======================
+   BUTTON TABLE
+====================== */
+.btn-detail{
+    background:#0ea5e9;
+    color:white;
+    padding:6px 12px;
+    border-radius:8px;
+    font-size:12px;
+    text-decoration:none;
+}
+
+.btn-struk{
+    background:#22c55e;
+    color:white;
+    padding:6px 12px;
+    border-radius:8px;
+    font-size:12px;
+    text-decoration:none;
+}
+
+/* ======================
+   ALERT
+====================== */
+.custom-alert{
+    background:#fee2e2;
+    color:#991b1b;
+    padding:10px;
+    border-radius:10px;
+    margin-bottom:15px;
 }
 
 /* ======================
    RESPONSIVE
 ====================== */
-@media(max-width:992px){
-.main{
-margin-left:0;
+@media(max-width:768px){
+    .main{
+        margin-left:0;
+    }
 }
-}
-
-/* =========================================
-   KHUSUS HALAMAN TRANSAKSI SAJA
-   (tidak mengganggu dashboard)
-========================================= */
-
-.transaksi-card .produk-container{
-display:flex;
-gap:25px;
-flex-wrap:wrap;
-margin-top:15px;
-}
-
-.transaksi-card .produk-card{
-width:260px;
-cursor:pointer;
+/* ======================
+   PRODUK MODERN STYLE
+====================== */
+.produk-inner{
+    position:relative;
+    background:#f1f5f9;
+    border-radius:18px;
+    padding:18px;
+    color:#1e293b;
+    box-shadow:0 6px 20px rgba(0,0,0,0.1);
+    transition:all .3s ease;
+    border:2px solid transparent;
 }
 
-.transaksi-card .produk-card input{
-display:none;
+/* HOVER */
+.produk-inner:hover{
+    transform:translateY(-6px);
 }
 
-/* BOX PUTIH MODERN */
-.transaksi-card .produk-inner{
-background:white;
-border-radius:18px;
-padding:20px;
-color:#1e293b;
-box-shadow:0 8px 20px rgba(0,0,0,0.08);
-transition:0.3s;
+/* CHECK ICON */
+.check-icon{
+    position:absolute;
+    top:10px;
+    right:10px;
+    background:#2563eb;
+    color:white;
+    width:22px;
+    height:22px;
+    border-radius:50%;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:12px;
+    opacity:0;
+    transform:scale(0);
+    transition:0.3s;
 }
 
-.transaksi-card .produk-card:hover .produk-inner{
-transform:translateY(-5px);
+/* HEADER */
+.produk-header{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    margin-bottom:10px;
 }
 
-/* ICON GLOBAL */
-.transaksi-card .produk-icon{
-width:50px;
-height:50px;
-background:#3b82f6;
-border-radius:14px;
-display:flex;
-align-items:center;
-justify-content:center;
-color:white;
-font-size:24px;
-margin-bottom:12px;
+.produk-header h6{
+    font-size:14px;
+    margin:0;
 }
 
-/* TITLE */
-.transaksi-card .produk-inner h6{
-font-size:15px;
-font-weight:600;
-margin-bottom:12px;
+.produk-header small{
+    font-size:11px;
+    color:#64748b;
+}
+
+/* ICON */
+.produk-icon{
+    width:40px;
+    height:40px;
+    background:#2563eb;
+    border-radius:10px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    color:white;
+    font-size:18px;
 }
 
 /* DETAIL */
-.transaksi-card .produk-detail{
-font-size:13px;
-display:grid;
-gap:6px;
-margin-bottom:15px;
+.produk-detail-modern{
+    margin-top:10px;
+    font-size:12px;
 }
 
-.transaksi-card .produk-detail span{
-font-size:12px;
-color:#64748b;
+.produk-detail-modern .row{
+    display:flex;
+    justify-content:space-between;
+    margin-bottom:6px;
 }
 
-.transaksi-card .produk-detail small{
-font-weight:500;
-color:#1e293b;
+.produk-detail-modern span{
+    color:#64748b;
 }
 
-/* BADGE */
-.badge-ready{
-background:#dbeafe;
-color:#2563eb;
-padding:3px 10px;
-border-radius:12px;
-font-size:11px;
-font-weight:600;
+.produk-detail-modern strong{
+    font-weight:500;
 }
 
-.badge-full{
-background:#fee2e2;
-color:#dc2626;
-padding:3px 10px;
-border-radius:12px;
-font-size:11px;
-font-weight:600;
+/* BUTTON */
+.btn-pilih-modern{
+    margin-top:10px;
+    background:#3b82f6;
+    color:white;
+    text-align:center;
+    padding:6px;
+    border-radius:8px;
+    font-size:12px;
+    transition:0.3s;
 }
 
-/* BUTTON PILIH */
-.transaksi-card .btn-pilih{
-background:#3b82f6;
-color:white;
-text-align:center;
-padding:6px;
-border-radius:10px;
-font-size:13px;
-font-weight:500;
+/* ======================
+   SELECTED EFFECT
+====================== */
+.produk-card input:checked + .produk-inner{
+    border:2px solid #2563eb;
+    background:#e0ecff;
+    transform:scale(1.03);
+    box-shadow:0 10px 25px rgba(37,99,235,0.3);
 }
 
-/* ACTIVE BORDER */
-.transaksi-card .produk-card input:checked + .produk-inner{
-border:3px solid #3b82f6;
-}
-.status-badge{
-padding:5px 10px;
-border-radius:6px;
-font-size:13px;
-font-weight:600;
+/* SHOW CHECK */
+.produk-card input:checked + .produk-inner .check-icon{
+    opacity:1;
+    transform:scale(1);
 }
 
-.status-aktif{
-background:#d4edda;
-color:#155724;
+/* BUTTON ACTIVE */
+.produk-card input:checked + .produk-inner .btn-pilih-modern{
+    background:#1d4ed8;
 }
 
-.status-selesai{
-background:#f8d7da;
-color:#721c24;
+/* DISABLED */
+.disabled-card{
+    opacity:0.6;
+    pointer-events:none;
+}
+/* ======================
+   DETAIL GRID
+====================== */
+.detail-grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(200px,1fr));
+    gap:15px;
+    margin-bottom:20px;
+}
+
+.detail-item{
+    background:rgba(255,255,255,0.15);
+    padding:15px;
+    border-radius:12px;
+}
+
+.detail-item span{
+    font-size:12px;
+    opacity:0.8;
+}
+
+.detail-item strong{
+    display:block;
+    margin-top:5px;
+    font-size:14px;
+}
+
+/* ======================
+   TOTAL BOX
+====================== */
+.total-box{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(200px,1fr));
+    gap:15px;
+    margin-top:20px;
+}
+
+.total-box div{
+    background:white;
+    color:#1e293b;
+    padding:15px;
+    border-radius:12px;
+    text-align:center;
+    box-shadow:0 6px 15px rgba(0,0,0,0.1);
+}
+
+.total-box span{
+    font-size:12px;
+    color:#64748b;
+}
+
+.total-box h3{
+    margin-top:5px;
+}
+
+.total-box .kembali{
+    color:#16a34a;
+}
+
+/* ======================
+   BUTTON MODERN FINAL
+====================== */
+.btn-modern{
+    display:inline-flex;
+    align-items:center;
+    gap:8px;
+    padding:10px 18px;
+    border-radius:10px;
+    text-decoration:none;
+    font-size:13px;
+    font-weight:500;
+    transition:all .3s ease;
+    box-shadow:0 6px 15px rgba(0,0,0,0.15);
+}
+
+/* PRIMARY (CETAK STRUK) */
+.btn-struk{
+    background:linear-gradient(135deg,#22c55e,#16a34a);
+    color:white;
+}
+
+.btn-struk:hover{
+    transform:translateY(-2px);
+    box-shadow:0 10px 20px rgba(34,197,94,0.4);
+}
+
+/* SECONDARY (KEMBALI) */
+.btn-secondary{
+    background:#64748b;
+    color:white;
+    margin-left:10px;
+}
+
+.btn-secondary:hover{
+    background:#475569;
+    transform:translateY(-2px);
+}
+/* ================= ALERT MODERN ================= */
+.custom-alert{
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    padding: 15px 20px;
+    border-radius: 12px;
+    color: white;
+    z-index: 9999;
+    min-width: 260px;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+    animation: slideIn .4s ease;
+}
+
+.custom-alert.success{
+    background: #22c55e;
+}
+
+.custom-alert.error{
+    background: #ef4444;
+}
+
+.alert-actions{
+    margin-top:10px;
+}
+
+.btn-cetak{
+    background:white;
+    color:#16a34a;
+    border:none;
+    padding:7px 12px;
+    border-radius:6px;
+    cursor:pointer;
+    font-weight:600;
+}
+
+.btn-cetak:hover{
+    background:#f1f5f9;
+}
+
+@keyframes slideIn{
+    from{
+        opacity:0;
+        transform: translateX(100%);
+    }
+    to{
+        opacity:1;
+        transform: translateX(0);
+    }
+}
+
+/* ======================
+   ACTION BAR
+====================== */
+.action-bar{
+    display:flex;
+    justify-content:flex-end;
+    margin-bottom:15px;
+}
+
+/* ======================
+   SEARCH BOX
+====================== */
+.search-box input{
+    padding:10px 14px;
+    border-radius:10px;
+    border:none;
+    outline:none;
+    font-size:13px;
+    width:220px;
+    box-shadow:0 4px 10px rgba(0,0,0,0.15);
+    transition:0.3s;
+}
+
+.search-box input:focus{
+    width:260px;
+    box-shadow:0 6px 15px rgba(0,0,0,0.25);
+}
+
+/* BACKGROUND GLOBAL */
+body {
+    margin: 0;
+    font-family: 'Segoe UI', sans-serif;
+    background: linear-gradient(135deg, #3a7bd5, #5f2c82);
+    color: #fff;
+}
+
+/* MAIN CONTENT */
+.main {
+    margin-left: 260px;
+    padding: 30px;
+}
+
+/* TITLE */
+.page-title {
+    font-size: 24px;
+    font-weight: bold;
+    margin-bottom: 20px;
+}
+
+/* CARD GLASS */
+.card-table {
+    background: rgba(255,255,255,0.08);
+    backdrop-filter: blur(10px);
+    border-radius: 15px;
+    padding: 20px;
+}
+
+/* TABLE */
+.table-modern {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.table-modern th {
+    text-align: left;
+    padding: 12px;
+    font-size: 14px;
+    opacity: 0.8;
+}
+
+.table-modern td {
+    padding: 14px 12px;
+    border-top: 1px solid rgba(255,255,255,0.1);
+}
+
+/* BUTTON */
+.btn-modern {
+    padding: 8px 14px;
+    border-radius: 10px;
+    text-decoration: none;
+    font-size: 13px;
+    display: inline-block;
+}
+
+.btn-warning {
+    background: #f59e0b;
+    color: #fff;
+}
+
+.btn-success {
+    background: #10b981;
+    color: #fff;
+}
+
+/* FORM */
+.form-modern {
+    background: rgba(255,255,255,0.08);
+    padding: 25px;
+    border-radius: 15px;
+    backdrop-filter: blur(10px);
+    max-width: 500px;
+}
+
+.form-group {
+    margin-bottom: 15px;
+}
+
+.form-group label {
+    font-size: 13px;
+    display: block;
+    margin-bottom: 5px;
+}
+
+.form-group input,
+.form-group select {
+    width: 100%;
+    padding: 10px;
+    border-radius: 8px;
+    border: none;
+    outline: none;
+}
+/* ================= FILTER WRAPPER ================= */
+.filter-wrapper {
+    position: relative;
+    display: inline-block;
+    margin-bottom: 15px;
+}
+
+/* ================= BUTTON ================= */
+.filter-btn {
+    background: #4f46e5;
+    color: #fff;
+    border: none;
+    padding: 10px 16px;
+    border-radius: 8px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.filter-btn:hover {
+    background: #4338ca;
+}
+
+/* ================= DROPDOWN ================= */
+.filter-dropdown {
+    display: none;
+    position: absolute;
+    top: 45px;
+    right: 0;
+    width: 260px;
+    background: #0aa1e7;
+    border-radius: 12px;
+    padding: 15px;
+    box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+    z-index: 100;
+}
+
+/* ================= TITLE ================= */
+.filter-dropdown h4 {
+    margin-bottom: 10px;
+    font-size: 14px;
+    font-weight: 600;
+}
+
+/* ================= LIST ================= */
+.filter-list {
+    max-height: 180px;
+    overflow-y: auto;
+    margin-bottom: 10px;
+}
+
+/* ================= ITEM ================= */
+.filter-item {
+    display: flex;
+    align-items: center;
+    padding: 6px 4px;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+.filter-item:hover {
+    background: #19449c;
+}
+
+.filter-item input {
+    margin-right: 8px;
+}
+
+/* ================= ACTION BUTTON ================= */
+.filter-actions {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 10px;
+}
+
+.btn-apply {
+    background: #16a34a;
+    color: #fff;
+    border: none;
+    padding: 6px 12px;
+    border-radius: 6px;
+    cursor: pointer;
+}
+
+.btn-apply:hover {
+    background: #15803d;
+}
+
+.btn-reset {
+    background: #ef4444;
+    color: #fff;
+    padding: 6px 12px;
+    border-radius: 6px;
+    text-decoration: none;
+}
+
+.btn-reset:hover {
+    background: #dc2626;
+}
+
+.kategori-box {
+    margin-top: 15px;
+}
+
+.kategori-card {
+    background: #e6f0ff;
+    padding: 15px;
+    border-radius: 12px;
+    text-align: center;
+}
+
+.kategori-icon {
+    font-size: 30px;
+    margin-bottom: 5px;
+}
+
+.kategori-card p {
+    font-size: 13px;
+    color: #333;
 }

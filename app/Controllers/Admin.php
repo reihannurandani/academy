@@ -109,21 +109,53 @@ class Admin extends BaseController
         return view('admin/create_product', $data);
     }
 
-    public function storeProduct()
-    {
-        $this->productModel->save([
-            'id_kategori'  => $this->request->getPost('id_kategori'),
-            'nama_produk'  => $this->request->getPost('nama_produk'),
-            'harga_produk' => $this->request->getPost('harga_produk'),
-            'jam_kursus'   => $this->request->getPost('jam_kursus'),
-            'kuota'        => $this->request->getPost('kuota'),
-            'status'       => $this->request->getPost('status'),
-            'mentor'       => $this->request->getPost('mentor')
-        ]);
+public function storeProduct()
+{
+    $model = new \App\Models\ProductModel();
 
-        $this->log('Tambah produk');
-        return redirect()->to('/admin/products');
+    $hari_mulai   = $this->request->getPost('hari_mulai');
+    $hari_selesai = $this->request->getPost('hari_selesai');
+    $jam_mulai    = $this->request->getPost('jam_mulai');
+    $jam_selesai  = $this->request->getPost('jam_selesai');
+
+    if ($jam_mulai >= $jam_selesai) {
+        return redirect()->back()->with('error', 'Jam selesai harus lebih besar dari jam mulai');
     }
+
+    $bentrok = $model
+        ->groupStart()
+            ->where('hari_mulai', $hari_mulai)
+            ->orWhere('hari_selesai', $hari_mulai)
+            ->orWhere('hari_mulai', $hari_selesai)
+        ->groupEnd()
+        ->groupStart()
+            ->where('jam_mulai <', $jam_selesai)
+            ->where('jam_selesai >', $jam_mulai)
+        ->groupEnd()
+        ->first();
+
+    if ($bentrok) {
+        return redirect()->back()->with('error', 'Jadwal bentrok dengan mapel lain!');
+    }
+
+    $kuota = $this->request->getPost('kuota');
+    $status = ($kuota <= 0) ? 'tidak tersedia' : 'tersedia';
+
+    $model->save([
+        'id_kategori'   => $this->request->getPost('id_kategori'),
+        'nama_produk'   => $this->request->getPost('nama_produk'),
+        'harga_produk'  => $this->request->getPost('harga_produk'),
+        'hari_mulai'    => $hari_mulai,
+        'hari_selesai'  => $hari_selesai,
+        'jam_mulai'     => $jam_mulai,
+        'jam_selesai'   => $jam_selesai,
+        'kuota'         => $kuota,
+        'mentor'        => $this->request->getPost('mentor'),
+        'status'        => $status,
+    ]);
+
+    return redirect()->to('/admin/products')->with('success', 'Berhasil ditambahkan');
+}
 
     public function editProduct($id)
     {
@@ -133,21 +165,54 @@ class Admin extends BaseController
         return view('admin/edit_product', $data);
     }
 
-    public function updateProduct($id)
-    {
-        $this->productModel->update($id, [
-            'id_kategori'  => $this->request->getPost('id_kategori'),
-            'nama_produk'  => $this->request->getPost('nama_produk'),
-            'harga_produk' => $this->request->getPost('harga_produk'),
-            'jam_kursus'   => $this->request->getPost('jam_kursus'),
-            'kuota'        => $this->request->getPost('kuota'),
-            'status'       => $this->request->getPost('status'),
-            'mentor'       =>$this->request->getPost('mentor')
-        ]);
+public function updateProduct($id)
+{
+    $model = new \App\Models\ProductModel();
 
-        $this->log('Update produk');
-        return redirect()->to('/admin/products');
+    $hari_mulai   = $this->request->getPost('hari_mulai');
+    $hari_selesai = $this->request->getPost('hari_selesai');
+    $jam_mulai    = $this->request->getPost('jam_mulai');
+    $jam_selesai  = $this->request->getPost('jam_selesai');
+
+    if ($jam_mulai >= $jam_selesai) {
+        return redirect()->back()->with('error', 'Jam tidak valid');
     }
+
+    $bentrok = $model
+        ->where('id !=', $id)
+        ->groupStart()
+            ->where('hari_mulai', $hari_mulai)
+            ->orWhere('hari_selesai', $hari_mulai)
+            ->orWhere('hari_mulai', $hari_selesai)
+        ->groupEnd()
+        ->groupStart()
+            ->where('jam_mulai <', $jam_selesai)
+            ->where('jam_selesai >', $jam_mulai)
+        ->groupEnd()
+        ->first();
+
+    if ($bentrok) {
+        return redirect()->back()->with('error', 'Jadwal bentrok!');
+    }
+
+    $kuota = $this->request->getPost('kuota');
+    $status = ($kuota <= 0) ? 'tidak tersedia' : 'tersedia';
+
+    $model->update($id, [
+        'id_kategori'   => $this->request->getPost('id_kategori'),
+        'nama_produk'   => $this->request->getPost('nama_produk'),
+        'harga_produk'  => $this->request->getPost('harga_produk'),
+        'hari_mulai'    => $hari_mulai,
+        'hari_selesai'  => $hari_selesai,
+        'jam_mulai'     => $jam_mulai,
+        'jam_selesai'   => $jam_selesai,
+        'kuota'         => $kuota,
+        'mentor'        => $this->request->getPost('mentor'),
+        'status'        => $status,
+    ]);
+
+    return redirect()->to('/admin/products')->with('success', 'Berhasil diupdate');
+}
 
     public function deleteProduct($id)
     {

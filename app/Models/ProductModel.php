@@ -13,10 +13,13 @@ class ProductModel extends Model
         'id_kategori',
         'nama_produk',
         'harga_produk',
-        'jam_kursus',
+        'hari_mulai',
+        'hari_selesai',
+        'jam_mulai',
+        'jam_selesai',
         'kuota',
         'status',
-        'mentor'        
+        'mentor'
     ];
 
     protected $useTimestamps = true;

@@ -6,12 +6,18 @@
 
     <h3>Tambah Produk</h3>
 
+    <?php if(session()->getFlashdata('error')): ?>
+        <div style="background:#ff4d4d;color:white;padding:10px;border-radius:6px;margin-bottom:10px;">
+            <?= session()->getFlashdata('error') ?>
+        </div>
+    <?php endif; ?>
+
     <div class="table-box" style="max-width:500px;">
 
         <form method="post" action="<?= base_url('admin/store-product') ?>" class="form-user">
 
-            <label for="id_kategori">Kategori</label>
-            <select name="id_kategori" id="id_kategori" required>
+            <label>Kategori</label>
+            <select name="id_kategori" required>
                 <?php foreach($categories as $c): ?>
                     <option value="<?= $c['id'] ?>">
                         <?= esc($c['nama_kategori']) ?>
@@ -19,32 +25,48 @@
                 <?php endforeach; ?>
             </select>
 
-            <label for="nama_produk">Nama Produk</label>
-            <input type="text" name="nama_produk" id="nama_produk" placeholder="Nama Produk" required>
+            <label>Nama Produk</label>
+            <input type="text" name="nama_produk" required>
 
-            <label for="harga_produk">Harga</label>
-            <input type="number" name="harga_produk" id="harga_produk" placeholder="Harga" required>
-
-            <label for="jam_kursus">Jam Kursus</label>
-            <input type="text" name="jam_kursus" id="jam_kursus" placeholder="Jam Kursus (contoh: 13:00 - 15:00)" required>
-
-            <label for="kuota">Kuota</label>
-            <input type="number" name="kuota" id="kuota" placeholder="Kuota">
-
-            <label for="mentor">Mentor</label>
-            <input type="text" name="mentor" id="mentor" placeholder="Mentor">
-
-            <label for="status">Status</label>
-            <select name="status" id="status">
-                <option value="tersedia">Tersedia</option>
-                <option value="tidak tersedia">Tidak Tersedia</option>
+            <label>Hari Mulai</label>
+            <select name="hari_mulai" required>
+                <option>Senin</option>
+                <option>Selasa</option>
+                <option>Rabu</option>
+                <option>Kamis</option>
+                <option>Jumat</option>
+                <option>Sabtu</option>
+                <option>Minggu</option>
             </select>
 
-            <button class="tambah">Simpan</button>
+            <label>Hari Selesai</label>
+            <select name="hari_selesai" required>
+                <option>Senin</option>
+                <option>Selasa</option>
+                <option>Rabu</option>
+                <option>Kamis</option>
+                <option>Jumat</option>
+                <option>Sabtu</option>
+                <option>Minggu</option>
+            </select>
 
-            <a href="<?= base_url('admin/products') ?>" class="kembali">
-                ← Kembali
-            </a>
+            <label>Jam Mulai</label>
+            <input type="time" name="jam_mulai" required>
+
+            <label>Jam Selesai</label>
+            <input type="time" name="jam_selesai" required>
+
+            <label>Harga</label>
+            <input type="number" name="harga_produk" required>
+
+            <label>Kuota</label>
+            <input type="number" name="kuota">
+
+            <label>Mentor</label>
+            <input type="text" name="mentor">
+
+            <button class="tambah">Simpan</button>
+            <a href="<?= base_url('admin/products') ?>" class="kembali">← Kembali</a>
 
         </form>
 
